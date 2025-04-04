@@ -7,6 +7,53 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="10">
+            <Grid>
+                <TextBox x:Name="txtTitlu" Width="100" Margin="5" />
+                <TextBlock Text="Introduceți titlul" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{Binding Text, ElementName=txtTitlu, Converter={StaticResource EmptyStringToVisibilityConvert}}" />
+            </Grid>
+
+            <Grid>
+                <TextBox x:Name="txtDescriere" Width="200" Margin="5" />
+                <TextBlock Text="Introduceti descrierea" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{Binding Text, ElementName=txtDescriere, Converter={StaticResource EmptyStringToVisibilityConvert} }" />
+            </Grid>
+
+
+            <DatePicker Name="datePickerDeadline" Width="100" Margin="5" SelectedDate="{Binding Deadline, Mode=TwoWay}"/>
+            <Grid>
+                <TextBox Name="txtOra" Width="50" Margin="0,0,0,5"/>
+                <TextBlock Text="Ora" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{ Binding Text, ElementName=txtOra,Converter={StaticResource EmptyStringToVisibilityConvert}}"/>
+            </Grid>
+
+            <Grid>
+                <TextBox Name="txtMinut" Width="50" Margin="0,0,0,5" />
+                <TextBlock Text="Minut" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{ Binding Text, ElementName=txtMinut,Converter={StaticResource EmptyStringToVisibilityConvert}}"/>
+            </Grid>
+
+            <Grid Height="291" Width="105">
+                <Button Content="Sterge Task" Click="StergeTask_Click" Width="100" Height="30 " Margin="0, 90 ,0,30"/>
+                <Button Content="Adauga task" Click="AdaugaTask_Click"  Width="100" Height="30" Margin="0,40,0,60"/>
+            </Grid>
+
+            <ListBox Name="taskuri" ItemsSource="{Binding Taskuri}" Width="126" Height="300" Margin="10">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Titlul}"  Background="{Binding BackgroundColor}" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding Descriere}" FontStyle="Italic"/>
+                            <TextBlock Text="{Binding Deadline, StringFormat='Deadline:{0:dd/MM/yyyy HH:mm}'}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+        </StackPanel>
+
 
     </Grid>
 </Window>
