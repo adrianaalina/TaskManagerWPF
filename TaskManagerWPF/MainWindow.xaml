@@ -44,9 +44,13 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <TextBlock Text="{Binding Titlul}"  Background="{Binding BackgroundColor}" FontWeight="Bold"/>
-                            <TextBlock Text="{Binding Descriere}" FontStyle="Italic"/>
-                            <TextBlock Text="{Binding Deadline, StringFormat='Deadline:{0:dd/MM/yyyy HH:mm}'}"/>
+                            <Border Background="{Binding BackgroundColor}" CornerRadius="6" Padding="4" Margin="2">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Titlul}" FontWeight="Bold" />
+                                    <TextBlock Text="{Binding Descriere}" FontStyle="Italic"/>
+                                    <TextBlock Text="{Binding Deadline, StringFormat='Deadline:{0:dd/MM/yyyy HH:mm}'}"/>
+                                </StackPanel>
+                            </Border>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
