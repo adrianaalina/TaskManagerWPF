@@ -1,0 +1,137 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{32308B8E-3C90-4CFE-87BA-A04A98F527D8}|TaskManagerWPF\\TaskManagerWPF.csproj|d:\\aplicatie taskmanagerwpf\\taskmanagerwpf\\taskmanagerwpf\\viewmodels\\taskviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32308B8E-3C90-4CFE-87BA-A04A98F527D8}|TaskManagerWPF\\TaskManagerWPF.csproj|solutionrelative:taskmanagerwpf\\viewmodels\\taskviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32308B8E-3C90-4CFE-87BA-A04A98F527D8}|TaskManagerWPF\\TaskManagerWPF.csproj|d:\\aplicatie taskmanagerwpf\\taskmanagerwpf\\taskmanagerwpf\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{32308B8E-3C90-4CFE-87BA-A04A98F527D8}|TaskManagerWPF\\TaskManagerWPF.csproj|solutionrelative:taskmanagerwpf\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32308B8E-3C90-4CFE-87BA-A04A98F527D8}|TaskManagerWPF\\TaskManagerWPF.csproj|d:\\aplicatie taskmanagerwpf\\taskmanagerwpf\\taskmanagerwpf\\models\\taskmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32308B8E-3C90-4CFE-87BA-A04A98F527D8}|TaskManagerWPF\\TaskManagerWPF.csproj|solutionrelative:taskmanagerwpf\\models\\taskmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32308B8E-3C90-4CFE-87BA-A04A98F527D8}|TaskManagerWPF\\TaskManagerWPF.csproj|d:\\aplicatie taskmanagerwpf\\taskmanagerwpf\\taskmanagerwpf\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{32308B8E-3C90-4CFE-87BA-A04A98F527D8}|TaskManagerWPF\\TaskManagerWPF.csproj|solutionrelative:taskmanagerwpf\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32308B8E-3C90-4CFE-87BA-A04A98F527D8}|TaskManagerWPF\\TaskManagerWPF.csproj|d:\\aplicatie taskmanagerwpf\\taskmanagerwpf\\taskmanagerwpf\\databasehelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32308B8E-3C90-4CFE-87BA-A04A98F527D8}|TaskManagerWPF\\TaskManagerWPF.csproj|solutionrelative:taskmanagerwpf\\databasehelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32308B8E-3C90-4CFE-87BA-A04A98F527D8}|TaskManagerWPF\\TaskManagerWPF.csproj|d:\\aplicatie taskmanagerwpf\\taskmanagerwpf\\taskmanagerwpf\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32308B8E-3C90-4CFE-87BA-A04A98F527D8}|TaskManagerWPF\\TaskManagerWPF.csproj|solutionrelative:taskmanagerwpf\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32308B8E-3C90-4CFE-87BA-A04A98F527D8}|TaskManagerWPF\\TaskManagerWPF.csproj|d:\\aplicatie taskmanagerwpf\\taskmanagerwpf\\taskmanagerwpf\\emptystringtovisibilityconvert.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32308B8E-3C90-4CFE-87BA-A04A98F527D8}|TaskManagerWPF\\TaskManagerWPF.csproj|solutionrelative:taskmanagerwpf\\emptystringtovisibilityconvert.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "TaskModel.cs",
+              "DocumentMoniker": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\TaskManagerWPF\\Models\\TaskModel.cs",
+              "RelativeDocumentMoniker": "TaskManagerWPF\\Models\\TaskModel.cs",
+              "ToolTip": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\TaskManagerWPF\\Models\\TaskModel.cs",
+              "RelativeToolTip": "TaskManagerWPF\\Models\\TaskModel.cs",
+              "ViewState": "AQIAAAcAAAAAAAAAAAAzwA8AAABcAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-04T19:20:47.332Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\TaskManagerWPF\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "TaskManagerWPF\\MainWindow.xaml.cs",
+              "ToolTip": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\TaskManagerWPF\\MainWindow.xaml.cs",
+              "RelativeToolTip": "TaskManagerWPF\\MainWindow.xaml.cs",
+              "ViewState": "AQIAACcAAAAAAAAAAAAYwFIAAAAXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-04T18:54:49.507Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "EmptyStringToVisibilityConvert.cs",
+              "DocumentMoniker": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\TaskManagerWPF\\EmptyStringToVisibilityConvert.cs",
+              "RelativeDocumentMoniker": "TaskManagerWPF\\EmptyStringToVisibilityConvert.cs",
+              "ToolTip": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\TaskManagerWPF\\EmptyStringToVisibilityConvert.cs",
+              "RelativeToolTip": "TaskManagerWPF\\EmptyStringToVisibilityConvert.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-04T18:49:16.267Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\TaskManagerWPF\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "TaskManagerWPF\\MainWindow.xaml",
+              "ToolTip": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\TaskManagerWPF\\MainWindow.xaml",
+              "RelativeToolTip": "TaskManagerWPF\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-04-04T18:40:26.574Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "App.xaml",
+              "DocumentMoniker": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\TaskManagerWPF\\App.xaml",
+              "RelativeDocumentMoniker": "TaskManagerWPF\\App.xaml",
+              "ToolTip": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\TaskManagerWPF\\App.xaml",
+              "RelativeToolTip": "TaskManagerWPF\\App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-04-04T18:39:50.248Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "DatabaseHelper.cs",
+              "DocumentMoniker": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\TaskManagerWPF\\DatabaseHelper.cs",
+              "RelativeDocumentMoniker": "TaskManagerWPF\\DatabaseHelper.cs",
+              "ToolTip": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\TaskManagerWPF\\DatabaseHelper.cs",
+              "RelativeToolTip": "TaskManagerWPF\\DatabaseHelper.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-04T15:06:34.195Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TaskViewModel.cs",
+              "DocumentMoniker": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\TaskManagerWPF\\ViewModels\\TaskViewModel.cs",
+              "RelativeDocumentMoniker": "TaskManagerWPF\\ViewModels\\TaskViewModel.cs",
+              "ToolTip": "D:\\Aplicatie TaskManagerWPF\\TaskManagerWPF\\TaskManagerWPF\\ViewModels\\TaskViewModel.cs*",
+              "RelativeToolTip": "TaskManagerWPF\\ViewModels\\TaskViewModel.cs*",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAYwBwAAAAGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-04T15:06:19.842Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
