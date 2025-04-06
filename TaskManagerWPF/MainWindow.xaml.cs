@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using TaskManagerWPF.Models;
 using TaskManagerWPF.ViewModels;
 
+
 namespace TaskManagerWPF;
 
 /// <summary>
@@ -22,6 +23,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        DatabaseInitializer.CreeazaBazaDacaNuExista();
         _viewModel = new TaskViewModel();
         DataContext = _viewModel;
     }
@@ -68,13 +70,26 @@ public partial class MainWindow : Window
         }
         DateTime deadline = datePickerDeadline.SelectedDate.Value.AddHours(ora).AddMinutes(minut);
         
+        if (txtStatus.Text == null)
+        {
+            MessageBox.Show("Selectati un status", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        
+        string statusText = txtStatus.Text;
+        if (!Enum.TryParse<StatusTask>(statusText, true, out StatusTask status))
+        {
+            string valoriAcceptate = string.Join(", ", Enum.GetNames(typeof(StatusTask)));
+            MessageBox.Show($"Status invalid. Folosește: {valoriAcceptate}.");
+            return;
+        }
             var nouTask = new TaskModel
             {
                 Id = _viewModel.Taskuri.Count + 1,
                 Titlul = txtTitlu.Text,
                 Descriere = txtDescriere.Text,
                 Deadline = deadline,
-                Finalizat = false
+                Status = status
             };
             _viewModel.Taskuri.Add(nouTask);
         
@@ -83,7 +98,9 @@ public partial class MainWindow : Window
         txtOra.Clear();
         txtMinut.Clear();
         datePickerDeadline.SelectedDate = null;
+        _viewModel.AdaugaTask(nouTask);
     }
 
+    
     
 }

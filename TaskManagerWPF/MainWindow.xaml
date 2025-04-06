@@ -14,25 +14,29 @@
 
         <StackPanel Orientation="Horizontal" Margin="10">
             <Grid>
-                <TextBox x:Name="txtTitlu" Width="100" Margin="5" />
+                <TextBox x:Name="txtTitlu" Width="100" Margin="3" />
                 <TextBlock Text="Introduceți titlul" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{Binding Text, ElementName=txtTitlu, Converter={StaticResource EmptyStringToVisibilityConvert}}" />
             </Grid>
 
             <Grid>
-                <TextBox x:Name="txtDescriere" Width="200" Margin="5" />
+                <TextBox x:Name="txtDescriere" Width="122" Margin="3" />
                 <TextBlock Text="Introduceti descrierea" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{Binding Text, ElementName=txtDescriere, Converter={StaticResource EmptyStringToVisibilityConvert} }" />
             </Grid>
 
 
-            <DatePicker Name="datePickerDeadline" Width="100" Margin="5" SelectedDate="{Binding Deadline, Mode=TwoWay}"/>
+            <DatePicker Name="datePickerDeadline" Width="100" Margin="3" SelectedDate="{Binding Deadline, Mode=TwoWay}"/>
             <Grid>
-                <TextBox Name="txtOra" Width="50" Margin="0,0,0,5"/>
+                <TextBox Name="txtOra" Width="50" Margin="3"/>
                 <TextBlock Text="Ora" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{ Binding Text, ElementName=txtOra,Converter={StaticResource EmptyStringToVisibilityConvert}}"/>
             </Grid>
 
             <Grid>
-                <TextBox Name="txtMinut" Width="50" Margin="0,0,0,5" />
+                <TextBox Name="txtMinut" Width="50" Margin="3" />
                 <TextBlock Text="Minut" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{ Binding Text, ElementName=txtMinut,Converter={StaticResource EmptyStringToVisibilityConvert}}"/>
+            </Grid>
+            <Grid>
+                <TextBox Name="txtStatus" Width="74" Margin="3" />
+                <TextBlock Text="AlegeStatus" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{ Binding Text, ElementName=txtStatus,Converter={StaticResource EmptyStringToVisibilityConvert}}"/>
             </Grid>
 
             <Grid Height="291" Width="105">
@@ -40,7 +44,7 @@
                 <Button Content="Adauga task" Click="AdaugaTask_Click"  Width="100" Height="30" Margin="0,40,0,60"/>
             </Grid>
 
-            <ListBox Name="taskuri" ItemsSource="{Binding Taskuri}" Width="126" Height="300" Margin="10">
+            <ListBox Name="taskuri" ItemsSource="{Binding Taskuri}" Width="126" Height="300" Margin="5">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
