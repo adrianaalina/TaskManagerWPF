@@ -15,6 +15,23 @@ public class TaskModel
     public string Descriere {get; set;}
     public DateTime Deadline {get; set;}
     public StatusTask Status  {get; set;}
+    
+    public TaskModel(int id, string titlu, string descriere, DateTime deadline, StatusTask status)
+    {
+        Id = id;
+        Titlul = titlu;
+        Descriere = descriere;
+        Deadline = deadline;
+        Status = status;
+    }
+
+    public TaskModel(string titlu, string descriere, DateTime deadline, StatusTask status)
+    {
+        Titlul = titlu;
+        Descriere = descriere;
+        Deadline = deadline;
+        Status = status;
+    }
     public SolidColorBrush BackgroundColor
     {
         get

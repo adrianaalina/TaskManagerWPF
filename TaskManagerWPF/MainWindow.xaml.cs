@@ -23,7 +23,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        DatabaseInitializer.CreeazaBazaDacaNuExista();
+        DatabaseInitializer.InitializeDatabase();
         _viewModel = new TaskViewModel();
         DataContext = _viewModel;
     }
@@ -83,14 +83,13 @@ public partial class MainWindow : Window
             MessageBox.Show($"Status invalid. Folosește: {valoriAcceptate}.");
             return;
         }
-            var nouTask = new TaskModel
-            {
-                Id = _viewModel.Taskuri.Count + 1,
-                Titlul = txtTitlu.Text,
-                Descriere = txtDescriere.Text,
-                Deadline = deadline,
-                Status = status
-            };
+            var nouTask = new TaskModel(
+            
+                 txtTitlu.Text,
+                txtDescriere.Text,
+                 deadline,
+                 status
+            );
             _viewModel.Taskuri.Add(nouTask);
         
         txtTitlu.Clear();
