@@ -10,6 +10,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TaskManagerWPF.Models;
 using TaskManagerWPF.ViewModels;
+using System.Collections.ObjectModel;
 
 
 namespace TaskManagerWPF;
@@ -25,7 +26,8 @@ public partial class MainWindow : Window
         InitializeComponent();
         DatabaseInitializer.InitializeDatabase();
         _viewModel = new TaskViewModel();
-        DataContext = _viewModel;
+        this.DataContext = _viewModel;
+        
     }
 
     private void StergeTask_Click(object sender, RoutedEventArgs e)
@@ -42,7 +44,7 @@ public partial class MainWindow : Window
             MessageBoxButton.YesNo, MessageBoxImage.Question);
         if (rezultat == MessageBoxResult.Yes)
         {
-            _viewModel.Taskuri.Remove(taskSelectat);
+            _viewModel.TaskuriC.Remove(taskSelectat);
         }
     }
 
@@ -75,6 +77,13 @@ public partial class MainWindow : Window
             MessageBox.Show("Selectati un status", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
+        string categorietxt = txtCategorie.Text;
+        if (!Enum.TryParse<CategoriiTask>(categorietxt, true, out CategoriiTask categorie))
+        {
+            string valoriAcceptate = string.Join(", ", Enum.GetNames(typeof(CategoriiTask)));
+            MessageBox.Show($"Status invalid. Folosește: {valoriAcceptate}.");
+            return;
+        }
         
         string statusText = txtStatus.Text;
         if (!Enum.TryParse<StatusTask>(statusText, true, out StatusTask status))
@@ -88,16 +97,54 @@ public partial class MainWindow : Window
                  txtTitlu.Text,
                 txtDescriere.Text,
                  deadline,
+                 categorie,
                  status
             );
-            _viewModel.Taskuri.Add(nouTask);
+            _viewModel.AdaugaTask(nouTask);
         
         txtTitlu.Clear();
         txtDescriere.Clear();
         txtOra.Clear();
         txtMinut.Clear();
+        txtCategorie.Clear();
+        txtStatus.Clear();
         datePickerDeadline.SelectedDate = null;
-        _viewModel.AdaugaTask(nouTask);
+    }
+
+    private void ActualizeazaTask_Click(object sender, RoutedEventArgs e)
+    {
+        if (taskuri.SelectedItem == null)
+        {
+            MessageBox.Show("Selectează un task pentru a-l modifica.", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        if (!int.TryParse(txtOra.Text, out int ora) || ora < 0 || ora > 23 ||
+            !int.TryParse(txtMinut.Text, out int minut) || minut < 0 || minut > 59)
+        {
+            MessageBox.Show("Introduceți o oră și minute valide.");
+            return;
+        }
+
+        if (!Enum.TryParse<StatusTask>(txtStatus.Text, true, out StatusTask status))
+        {
+            MessageBox.Show("Status invalid.");
+            return;
+        }
+
+        DateTime deadline = datePickerDeadline.SelectedDate.Value.AddHours(ora).AddMinutes(minut);
+
+        var taskSelectat = (TaskModel)taskuri.SelectedItem;
+
+        taskSelectat.Titlul = txtTitlu.Text;
+        taskSelectat.Descriere = txtDescriere.Text;
+        taskSelectat.Deadline = deadline;
+        taskSelectat.Status = status;
+
+        _viewModel.ActualizareTask(taskSelectat);
+        taskuri.Items.Refresh();
+
+        MessageBox.Show("Task actualizat cu succes!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     

@@ -8,28 +8,39 @@ public enum StatusTask
     InLucru,
     Finalizat
 }
+
+public enum CategoriiTask
+{
+    Curatenie,
+    Ingrijire,
+    Nespecificat,
+    Facultate
+}
 public class TaskModel
 {
     public int Id{get; set;}
     public string Titlul {get; set;}
     public string Descriere {get; set;}
     public DateTime Deadline {get; set;}
+    public CategoriiTask Categorie {get; set;}
     public StatusTask Status  {get; set;}
     
-    public TaskModel(int id, string titlu, string descriere, DateTime deadline, StatusTask status)
+    public TaskModel(int id, string titlu, string descriere, DateTime deadline,CategoriiTask categorie, StatusTask status)
     {
         Id = id;
         Titlul = titlu;
         Descriere = descriere;
         Deadline = deadline;
+        Categorie = categorie;
         Status = status;
     }
 
-    public TaskModel(string titlu, string descriere, DateTime deadline, StatusTask status)
+    public TaskModel(string titlu, string descriere, DateTime deadline,CategoriiTask categorie, StatusTask status)
     {
         Titlul = titlu;
         Descriere = descriere;
         Deadline = deadline;
+        Categorie = categorie;
         Status = status;
     }
     public SolidColorBrush BackgroundColor

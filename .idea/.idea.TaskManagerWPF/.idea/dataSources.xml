@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="TaskManager.db" uuid="7dddb4a5-a4b5-4949-85f4-623883881619">
+    <data-source source="LOCAL" name="taskmanager.db" uuid="a19d76cb-4f11-495b-953d-dd266f04f134">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/TaskManagerWPF/Data/TaskManager.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/TaskManagerWPF/Data/taskmanager.db</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
       </jdbc-additional-properties>

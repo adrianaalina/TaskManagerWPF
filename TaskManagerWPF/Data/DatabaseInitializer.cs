@@ -28,12 +28,10 @@ public static class DatabaseInitializer
                 Deadline TEXT,
                 Prioritate TEXT,
                 Categorie TEXT,
-                Finalizat INTEGER DEFAULT 0
+                Status INTEGER DEFAULT 0
             );";
 
         using var command = new SQLiteCommand(createTableQuery, connection);
         command.ExecuteNonQuery();
     }
-
-    public static string GetDatabasePath() => dbPath; // opțional, util pentru debug
 }

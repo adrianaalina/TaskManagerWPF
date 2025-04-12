@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Data.SQLite;
 using System.IO;
+using System.Data.SQLite;
 
 namespace TaskManagerWPF.Data
 {
     public static class DataBaseHelper
     {
-        public static string ObțineCaleaBazei()
+        public static SQLiteConnection ConnectToDatabase()
         {
-            string folder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
-
-            if (!Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
-
-            return Path.Combine(folder, "TaskManager.db");
+            string dbFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Data");
+            string dbPath = Path.Combine(dbFolder, "TaskManager.db");
+        
+            string connectionString = $"Data Source={dbPath};Version=3;UTF8=True";
+        
+            SQLiteConnection connection = new SQLiteConnection(connectionString);
+            connection.Open();
+            return connection;
         }
-
         
     }
 }

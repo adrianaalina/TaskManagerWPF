@@ -34,6 +34,11 @@
                 <TextBox Name="txtMinut" Width="50" Margin="3" />
                 <TextBlock Text="Minut" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{ Binding Text, ElementName=txtMinut,Converter={StaticResource EmptyStringToVisibilityConvert}}"/>
             </Grid>
+
+            <Grid>
+                <TextBox x:Name="txtCategorie" Width="100" Margin="3" />
+                <TextBlock Text="Alegeti Categorie" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{Binding Text, ElementName=txtCategorie, Converter={StaticResource EmptyStringToVisibilityConvert} }" />
+            </Grid>
             <Grid>
                 <TextBox Name="txtStatus" Width="74" Margin="3" />
                 <TextBlock Text="AlegeStatus" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{ Binding Text, ElementName=txtStatus,Converter={StaticResource EmptyStringToVisibilityConvert}}"/>
@@ -41,10 +46,11 @@
 
             <Grid Height="291" Width="105">
                 <Button Content="Sterge Task" Click="StergeTask_Click" Width="100" Height="30 " Margin="0, 90 ,0,30"/>
-                <Button Content="Adauga task" Click="AdaugaTask_Click"  Width="100" Height="30" Margin="0,40,0,60"/>
+                <Button Content="Adauga task" Click="AdaugaTask_Click"  Width="100" Height="30" Margin="0,45,0,60"/>
+                <Button Content="Actualizare task" Click="ActualizeazaTask_Click"  Width="100" Height="30" Margin="0,0,0,90"/>
             </Grid>
 
-            <ListBox Name="taskuri" ItemsSource="{Binding Taskuri}" Width="126" Height="300" Margin="5">
+            <ListBox Name="taskuri" ItemsSource="{Binding TaskuriC }" Width="200" Height="300" Margin="5">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -53,6 +59,7 @@
                                     <TextBlock Text="{Binding Titlul}" FontWeight="Bold" />
                                     <TextBlock Text="{Binding Descriere}" FontStyle="Italic"/>
                                     <TextBlock Text="{Binding Deadline, StringFormat='Deadline:{0:dd/MM/yyyy HH:mm}'}"/>
+                                    <TextBlock Text="{Binding Status}" FontStyle="Italic"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
