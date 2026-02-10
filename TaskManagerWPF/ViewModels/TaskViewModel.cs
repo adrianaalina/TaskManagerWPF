@@ -13,14 +13,16 @@ using TaskManagerWPF.ViewModels.Base;
 namespace TaskManagerWPF.ViewModels;
 
 
-public class TaskViewModel:BaseViewModel
-{ 
-    public ICommand AddCommand { get; }
+public class TaskViewModel : BaseViewModel
+{
+    public ICommand AddCommand { get; private set; }
+
     public Array Statusuri => Enum.GetValues(typeof(StatusTask));
     public Array Categorii => Enum.GetValues(typeof(CategoriiTask));
     public Array Prioritati => Enum.GetValues(typeof(PrioritateTask));
 
     private ObservableCollection<TaskModel> _taskuriC = new();
+
     public ObservableCollection<TaskModel> TaskuriC
     {
         get => _taskuriC;
@@ -30,7 +32,10 @@ public class TaskViewModel:BaseViewModel
             OnPropertyChanged();
         }
     }
+
+    //task curent pentru editare sau adaugare
     private TaskModel _selectedTask;
+
     public TaskModel SelectedTask
     {
         get => _selectedTask;
@@ -38,124 +43,145 @@ public class TaskViewModel:BaseViewModel
         {
             _selectedTask = value;
             OnPropertyChanged();
+           
+           
+            if (_selectedTask != null)
+            {
+                CurrentTask = new TaskModel
+                {
+                    Id = _selectedTask.Id,
+                    Titlu = _selectedTask.Titlu,
+                    Descriere = _selectedTask.Descriere,
+                    Deadline = _selectedTask.Deadline,
+                    Categorie = _selectedTask.Categorie,
+                    Status = _selectedTask.Status,
+                    Prioritate = _selectedTask.Prioritate
+                };
+            } 
             OnPropertyChanged(nameof(Ora));
             OnPropertyChanged(nameof(Minut));
-            OnPropertyChanged(nameof(DeadlineDate));
         }
     }
-    
+
+    private TaskModel _currentTask = new TaskModel();
+
+    public TaskModel CurrentTask
+    {
+        get => _currentTask;
+        set
+        {
+            _currentTask = value;
+            OnPropertyChanged();
+        }
+    }
+
+
     //selectare deadline
     public int Ora
     {
-        get => TaskNou?.Deadline.Hour ?? 0;
+        get => CurrentTask?.Deadline.Hour ?? 0;
         set
         {
-            if (TaskNou == null) return;
+            if (CurrentTask == null) return;
 
-            TaskNou.Deadline = new DateTime(
-                TaskNou.Deadline.Year,
-                TaskNou.Deadline.Month,
-                TaskNou.Deadline.Day,
+            CurrentTask.Deadline = new DateTime(
+                CurrentTask.Deadline.Year,
+                CurrentTask.Deadline.Month,
+                CurrentTask.Deadline.Day,
                 value,
-                TaskNou.Deadline.Minute,
+                CurrentTask.Deadline.Minute,
                 0);
 
-            OnPropertyChanged();
+            OnPropertyChanged(nameof(Ora));
         }
     }
 
     public int Minut
     {
-        get => TaskNou?.Deadline.Minute ?? 0;
+        get => CurrentTask?.Deadline.Minute ?? 0;
         set
         {
-            if (TaskNou == null) return;
+            if (CurrentTask == null) return;
 
-            TaskNou.Deadline = new DateTime(
-                TaskNou.Deadline.Year,
-                TaskNou.Deadline.Month,
-                TaskNou.Deadline.Day,
-                TaskNou.Deadline.Hour,
+            CurrentTask.Deadline = new DateTime(
+                CurrentTask.Deadline.Year,
+                CurrentTask.Deadline.Month,
+                CurrentTask.Deadline.Day,
+                CurrentTask.Deadline.Hour,
                 value,
                 0);
 
-            OnPropertyChanged();
-        } 
-    }
-    public DateTime? DeadlineDate
-    {
-        get => SelectedTask?.Deadline;
-        set
-        {
-            if (SelectedTask == null || value == null) return;
-            SelectedTask.Deadline = new DateTime(
-                value.Value.Year,
-                value.Value.Month,
-                value.Value.Day,
-                SelectedTask.Deadline.Hour,
-                SelectedTask.Deadline.Minute,
-                0);
-
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(Ora));
             OnPropertyChanged(nameof(Minut));
         }
     }
-
-    //task in lucru
-    private TaskModel _taskNou = new TaskModel()
-    {
-        Deadline = DateTime.Now
-    };
-
-    public TaskModel TaskNou
-    {
-        get => _taskNou;
-        set
-        {
-            _taskNou = value;
-            OnPropertyChanged();
-        }
-    }
+    
 
     //constructor
     public TaskViewModel()
     {
         IncarcaTaskuri();
-        AddCommand = new RelayCommand(_ => AdaugaTaskDinUI());
+        AddCommand = new RelayCommand(_ => SaveTask());
     }
-    
-    
-    //Adaugare
-    public void AdaugaTask(TaskModel task)
-    {
-        using var connection = DatabaseHelper.GetConnection(); 
-        string insertQuery =
-            "INSERT INTO Taskuri (Titlu, Descriere, Deadline, Categorie, Status, Prioritate) VALUES (@titlu, @descriere, @deadline,@categorie ,@status, @prioritate)";
 
-        using (var command = new SQLiteCommand(insertQuery, connection))
+
+    //Adaugare si actualizare
+    public void SaveTask()
+    {
+        using var connection = DatabaseHelper.GetConnection();
+
+        if (CurrentTask.Id == 0)
         {
-            command.Parameters.AddWithValue("@titlu", task.Titlu);
-            command.Parameters.AddWithValue("@descriere", task.Descriere);
-            command.Parameters.AddWithValue("@deadline", task.Deadline.ToString("yyyy-MM-dd HH:mm:ss"));
-            command.Parameters.AddWithValue("@categorie", task.Categorie.ToString());
-            command.Parameters.AddWithValue("@status", task.Status.ToString());
-            command.Parameters.AddWithValue("@prioritate", task.Prioritate.ToString());
-            command.ExecuteNonQuery();
+            // INSERT
+            string insert = @"INSERT INTO Taskuri
+        (Titlu, Descriere, Deadline, Categorie, Status, Prioritate)
+        VALUES (@Titlu,@Descriere,@Deadline,@Categorie,@Status,@Prioritate)";
+
+            using var cmd = new SQLiteCommand(insert, connection);
+
+            cmd.Parameters.AddWithValue("@Titlu", CurrentTask.Titlu);
+            cmd.Parameters.AddWithValue("@Descriere", CurrentTask.Descriere);
+            cmd.Parameters.AddWithValue("@Deadline", CurrentTask.Deadline.ToString("yyyy-MM-dd HH:mm:ss"));
+            cmd.Parameters.AddWithValue("@Categorie", CurrentTask.Categorie.ToString());
+            cmd.Parameters.AddWithValue("@Status", CurrentTask.Status.ToString());
+            cmd.Parameters.AddWithValue("@Prioritate", CurrentTask.Prioritate.ToString());
+
+            cmd.ExecuteNonQuery();
         }
-        Console.WriteLine("Task adăugat!");
-    }
-    private void AdaugaTaskDinUI()
-    {
-      AdaugaTask(TaskNou);
-      IncarcaTaskuri();
-      TaskNou = new TaskModel()
-      {
-          Deadline = DateTime.Now
-      };
+        else
+        {
+            // UPDATE
+            string update = @"UPDATE Taskuri SET
+        Titlu=@Titlu,
+        Descriere=@Descriere,
+        Deadline=@Deadline,
+        Categorie=@Categorie,
+        Status=@Status,
+        Prioritate=@Prioritate
+        WHERE Id=@Id";
+
+            using var cmd = new SQLiteCommand(update, connection);
+
+            cmd.Parameters.AddWithValue("@Titlu", CurrentTask.Titlu);
+            cmd.Parameters.AddWithValue("@Descriere", CurrentTask.Descriere);
+            cmd.Parameters.AddWithValue("@Deadline", CurrentTask.Deadline.ToString("yyyy-MM-dd HH:mm:ss"));
+            cmd.Parameters.AddWithValue("@Categorie", CurrentTask.Categorie.ToString());
+            cmd.Parameters.AddWithValue("@Status", CurrentTask.Status.ToString());
+            cmd.Parameters.AddWithValue("@Prioritate", CurrentTask.Prioritate.ToString());
+            cmd.Parameters.AddWithValue("@Id", CurrentTask.Id);
+
+            cmd.ExecuteNonQuery();
+        }
+
+        IncarcaTaskuri();
+
+        // RESET FORMULAR
+        CurrentTask = new TaskModel { Deadline = DateTime.Now };
+        OnPropertyChanged(nameof(Ora));
+        OnPropertyChanged(nameof(Minut));
+
     }
 
-    
+
     //Obtinere Taskuri
     public List<TaskModel> ObtinereTaskuri()
     {
@@ -174,6 +200,7 @@ public class TaskViewModel:BaseViewModel
                         {
                             Console.WriteLine($"Coloana {i}: {reader.GetName(i)}");
                         }
+
                         int id = reader.GetInt32(0);
                         string titlu = reader.GetString(1);
                         string descriere = reader.IsDBNull(2) ? "" : reader.GetString(2);
@@ -181,35 +208,37 @@ public class TaskViewModel:BaseViewModel
 
                         CategoriiTask categorie;
                         if (!Enum.TryParse(reader.GetString(4), out categorie))
-                            categorie = CategoriiTask.Nespecificat ;
-                        StatusTask status; 
+                            categorie = CategoriiTask.Nespecificat;
+                        StatusTask status;
                         if (!Enum.TryParse(reader.GetString(5), out status))
                             status = StatusTask.Neinceput;
-                        PrioritateTask prioritate; 
+                        PrioritateTask prioritate;
                         if (!Enum.TryParse(reader.GetString(6), out prioritate))
                             prioritate = PrioritateTask.Normal;
-                        TaskModel task = new TaskModel{
+                        TaskModel task = new TaskModel
+                        {
                             Titlu = titlu,
                             Descriere = descriere,
                             Deadline = deadline,
                             Categorie = categorie,
                             Status = status,
                             Prioritate = prioritate
-                            };
+                        };
                         task.Id = id;
                         taskuri.Add(task);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Eroare la citirea taskului: {ex.Message}"); 
+                        Console.WriteLine($"Eroare la citirea taskului: {ex.Message}");
                     }
                 }
             }
         }
+
         return taskuri;
     }
-    
-    
+
+
     //Sterge Task
     public void StergeTask(int id)
     {
@@ -226,45 +255,15 @@ public class TaskViewModel:BaseViewModel
 
     public void IncarcaTaskuri()
     {
-        TaskuriC.Clear(); 
+        TaskuriC.Clear();
         var listaDinBD = ObtinereTaskuri();
         foreach (var task in listaDinBD)
         {
-            TaskuriC.Add(task); 
+            TaskuriC.Add(task);
         }
     }
-    
-    //Actualizare Taskuri
-    public void ActualizareTask(TaskModel task)
-    {
-        using var connection = DatabaseHelper.GetConnection();
 
-        string query = @"UPDATE Taskuri 
-                     SET Titlu = @titlu, 
-                         Descriere = @descriere, 
-                         Deadline = @deadline, 
-                         Categorie = @categorie,
-                         Status = @status,
-                         Prioritate = @prioritate
-                     WHERE Id = @id";
-
-        using var command = new SQLiteCommand(query, connection);
-
-        command.Parameters.AddWithValue("@titlu", task.Titlu);
-        command.Parameters.AddWithValue("@descriere", task.Descriere);
-        command.Parameters.AddWithValue("@deadline", task.Deadline.ToString("yyyy-MM-dd HH:mm:ss"));
-        command.Parameters.AddWithValue("@categorie", task.Categorie.ToString());
-        command.Parameters.AddWithValue("@status", task.Status.ToString());
-        command.Parameters.AddWithValue("@prioritate", task.Prioritate.ToString());
-        command.Parameters.AddWithValue("@id", task.Id);
-
-        int rows = command.ExecuteNonQuery();
-
-        if (rows == 0)
-            MessageBox.Show("UPDATE nu a modificat niciun rand! ID-ul nu a fost gasit.");
-
-        IncarcaTaskuri();
-    }
 }
+   
 
     
