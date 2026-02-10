@@ -28,7 +28,7 @@ public static class DatabaseInitializer
                 Deadline TEXT,
                 Prioritate TEXT,
                 Categorie TEXT,
-                Status INTEGER DEFAULT 0
+                Status Text 
             );";
 
         using var command = new SQLiteCommand(createTableQuery, connection);

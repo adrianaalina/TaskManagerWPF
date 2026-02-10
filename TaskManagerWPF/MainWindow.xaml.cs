@@ -29,6 +29,9 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        statusComboBox.ItemsSource = Enum.GetValues(typeof(StatusTask));
+        categorieComboBox.ItemsSource = Enum.GetValues(typeof(CategoriiTask));
+
         DatabaseInitializer.InitializeDatabase();
         _viewModel = new TaskViewModel();
         this.DataContext = _viewModel;
@@ -71,6 +74,7 @@ public partial class MainWindow : Window
     }
     
 
+    
     private void AdaugaTask_Click(object sender, RoutedEventArgs e)
     {
         if (string.IsNullOrWhiteSpace(txtTitlu.Text))
@@ -95,12 +99,8 @@ public partial class MainWindow : Window
         }
         DateTime deadline = datePickerDeadline.SelectedDate.Value.AddHours(ora).AddMinutes(minut);
         
-        if (txtStatus.Text == null)
-        {
-            MessageBox.Show("Selectati un status", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-        string categorietxt = txtCategorie.Text;
+       
+        string categorietxt = categorieComboBox.Text;
         if (!Enum.TryParse<CategoriiTask>(categorietxt, true, out CategoriiTask categorie))
         {
             string valoriAcceptate = string.Join(", ", Enum.GetNames(typeof(CategoriiTask)));
@@ -108,7 +108,7 @@ public partial class MainWindow : Window
             return;
         }
         
-        string statusText = txtStatus.Text;
+        string statusText = statusComboBox.Text;
         if (!Enum.TryParse<StatusTask>(statusText, true, out StatusTask status))
         {
             string valoriAcceptate = string.Join(", ", Enum.GetNames(typeof(StatusTask)));
@@ -130,66 +130,55 @@ public partial class MainWindow : Window
         txtDescriere.Clear();
         txtOra.Clear();
         txtMinut.Clear();
-        txtCategorie.Clear();
-        txtStatus.Clear();
+        /*categorieComboBox.Clear();
+        statusComboBox.Clear();*/
         datePickerDeadline.SelectedDate = null;
     }
 
     private void ActualizeazaTask_Click(object sender, RoutedEventArgs e)
     {
-        if (taskuri.SelectedItem == null)
+        try
         {
-            MessageBox.Show("Selectează un task pentru a-l modifica.", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
+            if (taskuri.SelectedItem is TaskModel selectedTask)
+            {
+                selectedTask.Titlul = txtTitlu.Text;
+                selectedTask.Descriere = txtDescriere.Text;
 
-        if (!int.TryParse(txtOra.Text, out int ora) || ora < 0 || ora > 23 ||
-            !int.TryParse(txtMinut.Text, out int minut) || minut < 0 || minut > 59)
-        {
-            MessageBox.Show("Introduceți o oră și minute valide.");
-            return;
-        }
+                
+                if (statusComboBox.SelectedItem is StatusTask status)
+                    selectedTask.Status = status;
+                else
+                    throw new Exception("Statusul selectat nu este valid.");
 
-        if (!Enum.TryParse<StatusTask>(txtStatus.Text, true, out StatusTask status))
-        {
-            MessageBox.Show("Status invalid.");
-            return;
-        }
-        if (string.IsNullOrWhiteSpace(txtTitlu.Text))
-        {
-            MessageBox.Show("Introduceti un titlu pentru task", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-        /*if (!int.TryParse(txtOra.Text, out int ora) || ora < 0 || ora > 23)
-        {
-            MessageBox.Show("Introduceți o oră validă (0-23).", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-        if (!int.TryParse(txtMinut.Text, out int minut) || minut < 0 || minut > 59)
-        {
-            MessageBox.Show("Introduceți minute valide (0-59).", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }*/
-        if (datePickerDeadline.SelectedDate == null)
-        {
-            MessageBox.Show("Selectați o dată pentru deadline.", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-        DateTime deadline = datePickerDeadline.SelectedDate.Value.AddHours(ora).AddMinutes(minut);
+                // Validare și extragere Categorie
+                if (categorieComboBox.SelectedItem is CategoriiTask categorie)
+                    selectedTask.Categorie = categorie;
+                else
+                    throw new Exception("Categoria selectată nu este validă.");
 
-        var taskSelectat = (TaskModel)taskuri.SelectedItem;
+                // De facut validarea orei + data +minut
+                DateTime deadline = datePickerDeadline.SelectedDate.Value.AddHours(txtOra).AddMinutes(txtMinut);
 
-        taskSelectat.Titlul = txtTitlu.Text;
-        taskSelectat.Descriere = txtDescriere.Text;
-        taskSelectat.Deadline = deadline;
-        taskSelectat.Status = status;
 
-        _viewModel.ActualizareTask(taskSelectat);
-        taskuri.Items.Refresh();
+               _viewModel.ActualizareTask(selectedTask); // actualizare în SQLite
 
-        MessageBox.Show("Task actualizat cu succes!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Task actualizat cu succes!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+              //  taskuri.RefreshTaskuri();
+                //ClearInputFields();
+            }
+            else
+            {
+                MessageBox.Show("Selectează un task din listă.", "Atenție", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Eroare la actualizare: " + ex.Message, "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
+   
 
-    
-    
+
+
+
 }

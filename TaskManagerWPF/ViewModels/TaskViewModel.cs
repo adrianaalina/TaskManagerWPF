@@ -4,13 +4,16 @@ using System.IO;
 using System.Data.Common;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Media;
 using TaskManagerWPF.Models;
 using TaskManagerWPF.Data;
+using TaskManagerWPF.ViewModels.Base;
+
 namespace TaskManagerWPF.ViewModels;
 
 
-public class TaskViewModel
+public class TaskViewModel:BaseViewModel
 {
     public ObservableCollection<TaskModel> TaskuriC { get; set; } = new ObservableCollection<TaskModel>();
 
@@ -89,13 +92,22 @@ public class TaskViewModel
         var listaDinBD = ObtinereTaskuri();
         foreach (var task in listaDinBD)
         {
-            TaskuriC.Add(task); // adaugă fiecare task în ObservableCollection
+            TaskuriC.Add(task); 
         }
     }
     public void ActualizareTask(TaskModel task)
     {
         using (var connection = DataBaseHelper.ConnectToDatabase())
         {
+            if (task.Id <= 0)
+            {
+                MessageBox.Show("Taskul nu are ID valid. Nu se poate actualiza.");
+                return;
+            }
+            else
+            {
+
+
                 connection.Open();
                 string query = @"UPDATE Taskuri 
                              SET Titlu = @Titlu, 
@@ -104,8 +116,8 @@ public class TaskViewModel
                                  Categorie= @Categorie,
                                  Status = @Status
                              WHERE Id = @Id";
-                
-              
+
+
                 using (var command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Titlu", task.Titlul);
@@ -116,6 +128,7 @@ public class TaskViewModel
                     command.Parameters.AddWithValue("@Id", task.Id);
                     command.ExecuteNonQuery();
                 }
+            }
         }
         
     }

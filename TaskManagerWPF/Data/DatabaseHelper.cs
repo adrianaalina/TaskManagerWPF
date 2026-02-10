@@ -10,7 +10,7 @@ namespace TaskManagerWPF.Data
         public static SQLiteConnection ConnectToDatabase()
         {
             string dbFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Data");
-            string dbPath = Path.Combine(dbFolder, "TaskManager.db");
+            string dbPath = Path.Combine(dbFolder, "taskManager.db");
         
             string connectionString = $"Data Source={dbPath};Version=3;UTF8=True";
         

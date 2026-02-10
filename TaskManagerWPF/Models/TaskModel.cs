@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows.Media;
 namespace TaskManagerWPF.Models;
 
@@ -11,44 +12,79 @@ public enum StatusTask
 
 public enum CategoriiTask
 {
-    Curatenie,
-    Ingrijire,
-    Nespecificat,
-    Facultate
+    Personal,
+    Facultate,
+    Profesional,
+    Nespecificat
 }
-public class TaskModel
+public enum PrioritateTask
 {
-    public int Id{get; set;}
-    public string Titlul {get; set;}
-    public string Descriere {get; set;}
-    public DateTime Deadline {get; set;}
-    public CategoriiTask Categorie {get; set;}
-    public StatusTask Status  {get; set;}
-    
-    public TaskModel(int id, string titlu, string descriere, DateTime deadline,CategoriiTask categorie, StatusTask status)
-    {
-        Id = id;
-        Titlul = titlu;
-        Descriere = descriere;
-        Deadline = deadline;
-        Categorie = categorie;
-        Status = status;
-    }
+    Urgent,
+    Normal,
+    Optional
+}
+public class TaskModel : INotifyPropertyChanged
+{
+    private int id;
+    private string titlul;
+    private string descriere;
+    private DateTime deadline;
+    private CategoriiTask categorie;
+    private StatusTask status;
+    private PrioritateTask prioritate;
 
-    public TaskModel(string titlu, string descriere, DateTime deadline,CategoriiTask categorie, StatusTask status)
+    public int Id
     {
-        Titlul = titlu;
-        Descriere = descriere;
-        Deadline = deadline;
-        Categorie = categorie;
-        Status = status;
-    }
-    public SolidColorBrush BackgroundColor
-    {
-        get
+        get => id;
+        set
         {
-            return (Deadline - DateTime.Now).TotalHours < 24 ? Brushes.Coral : Brushes.Wheat;
+            id=value;
+            OnPropertyChanged(nameof(Id));
+
         }
     }
+
+    public string Titlu
+    {
+        get => titlul;
+        set { titlul = value;  OnPropertyChanged(nameof(Titlu)); } 
+    }
+
+    public string Descriere
+    {
+        get => descriere;
+        set{descriere=value; OnPropertyChanged(nameof(Descriere)); }
+    }
+    
+    public DateTime Deadline
+    {
+        get => deadline;
+        set { deadline = value; OnPropertyChanged(nameof(Deadline)); }
+    }
+
+    public CategoriiTask Categorie
+    {
+        get => categorie;
+        set { categorie = value; OnPropertyChanged(nameof(Categorie)); }
+    }
+
+    public StatusTask Status
+    {
+        get => status;
+        set { status = value; OnPropertyChanged(nameof(Status)); }
+    }
+    public PrioritateTask Prioritate
+    {
+        get => prioritate;
+        set { prioritate = value; OnPropertyChanged(nameof(Prioritate)); }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    
+    protected void OnPropertyChanged(string numeProprietate)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(numeProprietate));
+    }
+   
 
 }
