@@ -15,8 +15,16 @@ namespace TaskManagerWPF.ViewModels;
 
 public class TaskViewModel:BaseViewModel
 {
-    public ObservableCollection<TaskModel> TaskuriC { get; set; } = new ObservableCollection<TaskModel>();
-
+    private ObservableCollection<TaskModel> _taskuriC = new();
+    public ObservableCollection<TaskModel> TaskuriC
+    {
+        get => _taskuriC;
+        set
+        {
+            _taskuriC = value;
+            OnPropertyChanged();
+        }
+    }
 
     public TaskViewModel()
     {
@@ -65,10 +73,15 @@ public class TaskViewModel:BaseViewModel
                         string descriere = reader.IsDBNull(2) ? "" : reader.GetString(2);
                         DateTime deadline = DateTime.Parse(reader.GetString(3));
 
-                        CategoriiTask categorie =Enum.Parse<CategoriiTask>(reader.GetString(4)) ;
-                        StatusTask status = Enum.Parse<StatusTask>(reader.GetString(5));
-                        PrioritateTask prioritate = Enum.Parse<PrioritateTask>(reader.GetString(6));
-
+                        CategoriiTask categorie;
+                        if (!Enum.TryParse(reader.GetString(4), out categorie))
+                            categorie = CategoriiTask.Nespecificat ;
+                        StatusTask status; 
+                        if (!Enum.TryParse(reader.GetString(5), out status))
+                            status = StatusTask.Neinceput;
+                        PrioritateTask prioritate; 
+                        if (!Enum.TryParse(reader.GetString(6), out prioritate))
+                            prioritate = PrioritateTask.Normal;
                         TaskModel task = new TaskModel{
                             Titlu = titlu,
                             Descriere = descriere,
@@ -113,43 +126,33 @@ public class TaskViewModel:BaseViewModel
     }
     public void ActualizareTask(TaskModel task)
     {
-        using (var connection = DatabaseHelper.GetConnection())
-        {
-            if (task.Id <= 0)
-            {
-                MessageBox.Show("Taskul nu are ID valid. Nu se poate actualiza.");
-                return;
-            }
-            else
-            {
+        using var connection = DatabaseHelper.GetConnection();
 
+        string query = @"UPDATE Taskuri 
+                     SET Titlu = @titlu, 
+                         Descriere = @descriere, 
+                         Deadline = @deadline, 
+                         Categorie = @categorie,
+                         Status = @status,
+                         Prioritate = @prioritate
+                     WHERE Id = @id";
 
-                connection.Open();
-                string query = @"UPDATE Taskuri 
-                             SET Titlu = @Titlu, 
-                                 Descriere = @Descriere, 
-                                 Deadline = @Deadline, 
-                                 Categorie= @Categorie,
-                                 Status = @Status,
-                                 Prioritate = @Prioritate
-                             WHERE Id = @Id";
+        using var command = new SQLiteCommand(query, connection);
 
+        command.Parameters.AddWithValue("@titlu", task.Titlu);
+        command.Parameters.AddWithValue("@descriere", task.Descriere);
+        command.Parameters.AddWithValue("@deadline", task.Deadline.ToString("yyyy-MM-dd HH:mm:ss"));
+        command.Parameters.AddWithValue("@categorie", task.Categorie.ToString());
+        command.Parameters.AddWithValue("@status", task.Status.ToString());
+        command.Parameters.AddWithValue("@prioritate", task.Prioritate.ToString());
+        command.Parameters.AddWithValue("@id", task.Id);
 
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@titlu", task.Titlu);
-                    command.Parameters.AddWithValue("@descriere", task.Descriere);
-                    command.Parameters.AddWithValue("@deadline", task.Deadline.ToString());
-                    command.Parameters.AddWithValue("@categorie", (int)task.Categorie);
-                    command.Parameters.AddWithValue("@status", (int)task.Status);
-                    command.Parameters.AddWithValue("@prioritate", (int)task.Prioritate);
-                    command.Parameters.AddWithValue("@id", task.Id);
-                    command.ExecuteNonQuery();
-                }
-                IncarcaTaskuri();
-            }
-        }
-        
+        int rows = command.ExecuteNonQuery();
+
+        if (rows == 0)
+            MessageBox.Show("UPDATE nu a modificat niciun rand! ID-ul nu a fost gasit.");
+
+        IncarcaTaskuri();
     }
 }
 

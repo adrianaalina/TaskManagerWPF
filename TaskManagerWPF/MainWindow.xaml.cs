@@ -42,40 +42,24 @@ public partial class MainWindow : Window
 
 
     private void StergeTask_Click(object sender, RoutedEventArgs e)
-    {
-        if (taskuri.SelectedItem == null)
         {
-            MessageBox.Show("Selecteaza un task pentru a-l sterge", "Eroare", MessageBoxButton.OK,
-                MessageBoxImage.Warning);
-            return;
-        }
+            if (taskuri.SelectedItem is not TaskModel taskSelectat)
+            {
+                MessageBox.Show("Selecteaza un task pentru a-l sterge.");
+                return;
+            }
 
-        var taskSelectat = (TaskModel)taskuri.SelectedItem;
-        var taskId = taskSelectat.Id;
-        using (var connection = DatabaseHelper.GetConnection())
-        {
-            connection.Open();
-            var rezultat = MessageBox.Show($"Sigur vrei sa stergi task-ul \"{taskSelectat.Titlu}\"?", "Confirmare",
-                MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var rezultat = MessageBox.Show(
+                $"Sigur vrei sa stergi task-ul \"{taskSelectat.Titlu}\"?",
+                "Confirmare",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
             if (rezultat == MessageBoxResult.Yes)
             {
-                string deleteQuery = "DELETE FROM Taskuri WHERE Id = @Id";
-
-                using (var command = new SQLiteCommand(deleteQuery, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", taskId);
-                    command.ExecuteNonQuery();
-                }
-                if (taskSelectat != null)
-                {
-                    _viewModel.StergeTask(taskSelectat.Id);
-
-                }
-
-                Console.WriteLine($"Task cu ID-ul {taskId} a fost șters.");
+                _viewModel.StergeTask(taskSelectat.Id);
             }
         }
-    }
     
 
     
@@ -169,6 +153,14 @@ public partial class MainWindow : Window
                 else
                     throw new Exception("Categoria selectată nu este validă.");
 
+                if (prioritateComboBox.SelectedItem is PrioritateTask prioritate)
+                    selectedTask.Prioritate = prioritate;
+                else
+                {
+                    MessageBox.Show("Prioritatea selectată nu este validă.");
+                    return;
+                }
+
                 if (!int.TryParse(txtOra.Text, out int ora) || ora < 0 || ora > 23)
                 {
                     MessageBox.Show("Introduceți o oră validă (0-23).");
@@ -208,6 +200,23 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             MessageBox.Show("Eroare la actualizare: " + ex.Message, "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void taskuri_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (taskuri.SelectedItem is TaskModel task)
+        {
+            txtTitlu.Text=task.Titlu;
+            txtDescriere.Text = task.Descriere;
+
+            datePickerDeadline.SelectedDate = task.Deadline.Date;
+            txtOra.Text = task.Deadline.Hour.ToString();
+            txtMinut.Text = task.Deadline.Minute.ToString();
+
+            categorieComboBox.SelectedItem = task.Categorie;
+            statusComboBox.SelectedItem = task.Status;
+            prioritateComboBox.SelectedItem = task.Prioritate;
         }
     }
 

@@ -56,7 +56,7 @@
             <Button Content="Actualizare task" Click="ActualizeazaTask_Click"  Width="100" Height="30" Margin="0,0,0,90"/> 
             </Grid> 
 
-            <ListBox x:Name="taskuri" ItemsSource="{Binding TaskuriC }" Width="200" Height="300" Margin="5">
+            <ListBox x:Name="taskuri" SelectionChanged="taskuri_SelectionChanged" ItemsSource="{Binding TaskuriC }" Width="200" Height="300" Margin="5">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
