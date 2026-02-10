@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.SQLite;
 using System.IO;
 using System.Data.SQLite;
 
@@ -7,17 +6,10 @@ namespace TaskManagerWPF.Data
 {
     public static class DataBaseHelper
     {
-        public static SQLiteConnection ConnectToDatabase()
+        public static SQLiteConnection GetConnection()
+      
         {
-            string dbFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Data");
-            string dbPath = Path.Combine(dbFolder, "taskManager.db");
-        
-            string connectionString = $"Data Source={dbPath};Version=3;UTF8=True";
-        
-            SQLiteConnection connection = new SQLiteConnection(connectionString);
-            connection.Open();
-            return connection;
+            return new SQLiteConnection(DatabaseInitializer.ConnectionString);
         }
-        
     }
 }
