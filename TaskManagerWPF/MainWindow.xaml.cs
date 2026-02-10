@@ -202,22 +202,5 @@ public partial class MainWindow : Window
             MessageBox.Show("Eroare la actualizare: " + ex.Message, "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
-
-    private void taskuri_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (taskuri.SelectedItem is TaskModel task)
-        {
-            txtTitlu.Text=task.Titlu;
-            txtDescriere.Text = task.Descriere;
-
-            datePickerDeadline.SelectedDate = task.Deadline.Date;
-            txtOra.Text = task.Deadline.Hour.ToString();
-            txtMinut.Text = task.Deadline.Minute.ToString();
-
-            categorieComboBox.SelectedItem = task.Categorie;
-            statusComboBox.SelectedItem = task.Status;
-            prioritateComboBox.SelectedItem = task.Prioritate;
-        }
-    }
-
+    
 }

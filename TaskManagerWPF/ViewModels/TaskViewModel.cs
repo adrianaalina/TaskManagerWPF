@@ -15,6 +15,10 @@ namespace TaskManagerWPF.ViewModels;
 
 public class TaskViewModel:BaseViewModel
 {
+    public Array Statusuri => Enum.GetValues(typeof(StatusTask));
+    public Array Categorii => Enum.GetValues(typeof(CategoriiTask));
+    public Array Prioritati => Enum.GetValues(typeof(PrioritateTask));
+
     private ObservableCollection<TaskModel> _taskuriC = new();
     public ObservableCollection<TaskModel> TaskuriC
     {
@@ -25,6 +29,72 @@ public class TaskViewModel:BaseViewModel
             OnPropertyChanged();
         }
     }
+    private TaskModel _selectedTask;
+    public TaskModel SelectedTask
+    {
+        get => _selectedTask;
+        set
+        {
+            _selectedTask = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(Ora));
+            OnPropertyChanged(nameof(Minut));
+            OnPropertyChanged(nameof(DeadlineDate));
+        }
+    }
+    public int Ora
+    {
+        get => SelectedTask?.Deadline.Hour ?? 0;
+        set
+        {
+            if (SelectedTask == null) return;
+            SelectedTask.Deadline = new DateTime(
+                SelectedTask.Deadline.Year,
+                SelectedTask.Deadline.Month,
+                SelectedTask.Deadline.Day,
+                value,
+                SelectedTask.Deadline.Minute,
+                0);
+            OnPropertyChanged();
+        }
+    }
+
+    public int Minut
+    {
+        get => SelectedTask?.Deadline.Minute ?? 0;
+        set
+        {
+            if (SelectedTask == null) return;
+            SelectedTask.Deadline = new DateTime(
+                SelectedTask.Deadline.Year,
+                SelectedTask.Deadline.Month,
+                SelectedTask.Deadline.Day,
+                SelectedTask.Deadline.Hour,
+                value,
+                0);
+            OnPropertyChanged();
+        }
+    }
+    public DateTime? DeadlineDate
+    {
+        get => SelectedTask?.Deadline;
+        set
+        {
+            if (SelectedTask == null || value == null) return;
+            SelectedTask.Deadline = new DateTime(
+                value.Value.Year,
+                value.Value.Month,
+                value.Value.Day,
+                SelectedTask.Deadline.Hour,
+                SelectedTask.Deadline.Minute,
+                0);
+
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(Ora));
+            OnPropertyChanged(nameof(Minut));
+        }
+    }
+
 
     public TaskViewModel()
     {

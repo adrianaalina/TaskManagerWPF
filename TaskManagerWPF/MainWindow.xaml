@@ -16,38 +16,42 @@
 
         <StackPanel Orientation="Horizontal" Margin="10">
             <Grid>
-                <TextBox x:Name="txtTitlu" Width="80" Margin="3" />
+                <TextBox x:Name="txtTitlu" Text="{Binding SelectedTask.Titlu, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Width="80" Margin="3" />
                 <TextBlock Text="Scrie titlu" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{Binding Text, ElementName=txtTitlu, Converter={StaticResource EmptyStringToVisibilityConvert}}" />
             </Grid>
 
             <Grid>
-                <TextBox x:Name="txtDescriere" Width="80" Margin="3" />
+                <TextBox x:Name="txtDescriere" Text="{Binding SelectedTask.Descriere, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="80" Margin="3" />
                 <TextBlock Text="Scrie descriere" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{Binding Text, ElementName=txtDescriere, Converter={StaticResource EmptyStringToVisibilityConvert} }" />
             </Grid>
 
 
-            <DatePicker Name="datePickerDeadline" Width="100" Margin="3" SelectedDate="{Binding Deadline, Mode=TwoWay}"/>
+            <DatePicker Name="datePickerDeadline"  Width="100" Margin="3" SelectedDate="{Binding DeadlineDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <Grid>
-                <TextBox Name="txtOra" Width="50" Margin="3"/>
+                <TextBox Name="txtOra"  Text="{Binding Ora, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50" Margin="3"/>
                 <TextBlock Text="Ora" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{ Binding Text, ElementName=txtOra,Converter={StaticResource EmptyStringToVisibilityConvert}}"/>
             </Grid>
 
             <Grid>
-                <TextBox Name="txtMinut" Width="50" Margin="3" />
+                <TextBox Name="txtMinut" Text="{Binding Minut, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50" Margin="3" />
                 <TextBlock Text="Minut" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{ Binding Text, ElementName=txtMinut,Converter={StaticResource EmptyStringToVisibilityConvert}}"/>
             </Grid>
 
             <Grid>
-                <TextBlock Text="Categorie:"  Width="50" Margin="3" />
-                <ComboBox x:Name="categorieComboBox" Foreground="Gray"  Margin="10,5,0,0" />
+                <ComboBox x:Name="categorieComboBox"  ItemsSource="{Binding Categorii}"
+                          SelectedItem="{Binding SelectedTask.Categorie, Mode=TwoWay}" Margin="3" />
+            <TextBlock  Text="Categorie:" Foreground="DarkSlateGray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{ Binding Text, ElementName=categorieComboBox,Converter={StaticResource EmptyStringToVisibilityConvert}}" Width="50"  /> 
             </Grid>
+            
             <Grid>
-                <TextBlock Text="Status:" Width="45" Margin="3" />
-                <ComboBox x:Name="statusComboBox" Foreground="Gray" Margin="10,5,0,0"/>
+                <ComboBox x:Name="statusComboBox" ItemsSource="{Binding Statusuri}" SelectedItem="{Binding SelectedTask.Status, Mode=TwoWay}" Margin="3"/>
+                <TextBlock Text="Status:" Foreground="DarkSlateGray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{ Binding Text, ElementName=statusComboBox,Converter={StaticResource EmptyStringToVisibilityConvert}}" Width="45"  />
             </Grid>
+            
             <Grid>
-                <TextBlock Text="Prioritate:" Width="45" Margin="3" />
-                <ComboBox x:Name="prioritateComboBox" Foreground="Gray" Margin="10,5,0,0"/>
+                <ComboBox x:Name="prioritateComboBox" ItemsSource="{Binding Prioritati}" Margin="3"
+                          SelectedItem="{Binding SelectedTask.Prioritate, Mode=TwoWay}" />
+                <TextBlock Text="Prioritate:" Foreground="DarkSlateGray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{ Binding Text, ElementName=prioritateComboBox,Converter={StaticResource EmptyStringToVisibilityConvert}}" Width="45" />
             </Grid>
 
             <Grid Height="291" Width="105">
@@ -56,7 +60,7 @@
             <Button Content="Actualizare task" Click="ActualizeazaTask_Click"  Width="100" Height="30" Margin="0,0,0,90"/> 
             </Grid> 
 
-            <ListBox x:Name="taskuri" SelectionChanged="taskuri_SelectionChanged" ItemsSource="{Binding TaskuriC }" Width="200" Height="300" Margin="5">
+            <ListBox x:Name="taskuri" SelectedItem="{Binding SelectedTask, Mode=TwoWay}" ItemsSource="{Binding TaskuriC }" Width="200" Height="300" Margin="5">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
