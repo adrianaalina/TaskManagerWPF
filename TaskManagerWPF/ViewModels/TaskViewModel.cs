@@ -16,6 +16,7 @@ namespace TaskManagerWPF.ViewModels;
 public class TaskViewModel : BaseViewModel
 {
     public ICommand AddCommand { get; private set; }
+    public ICommand DeleteCommand { get; private set; }
 
     public Array Statusuri => Enum.GetValues(typeof(StatusTask));
     public Array Categorii => Enum.GetValues(typeof(CategoriiTask));
@@ -121,9 +122,36 @@ public class TaskViewModel : BaseViewModel
     {
         IncarcaTaskuri();
         AddCommand = new RelayCommand(_ => SaveTask());
+        DeleteCommand= new RelayCommand (_=>DeleteSelected(),_=>SelectedTask != null);
     }
 
+    //Stergere
+    private void DeleteSelected()
+    {
+        if(SelectedTask==null) return;
+        
+        var rezultat=MessageBox.Show( 
+            $"Sigur vrei sa stergi task-ul \"{SelectedTask.Titlu}\"?",
+        "Confirmare",
+        MessageBoxButton.YesNo,
+        MessageBoxImage.Question);
 
+        if(rezultat !=MessageBoxResult.Yes) return;
+        using var connection=DatabaseHelper.GetConnection();
+        string query = "DELETE FROM Taskuri WHERE Id=@id";
+        using var command = new SQLiteCommand(query, connection);
+        command.Parameters.AddWithValue("@id", SelectedTask.Id);
+        command.ExecuteNonQuery();
+
+        IncarcaTaskuri();
+        CurrentTask = new TaskModel { Deadline = DateTime.Now };
+
+        OnPropertyChanged(nameof(Ora));
+        OnPropertyChanged(nameof(Minut));
+    }
+    
+
+    
     //Adaugare si actualizare
     public void SaveTask()
     {

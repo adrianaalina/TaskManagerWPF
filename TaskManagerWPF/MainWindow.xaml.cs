@@ -30,27 +30,4 @@ public partial class MainWindow : Window
         InitializeComponent();
         DataContext = new TaskViewModel();
     }
-
-    private void StergeTask_Click(object sender, RoutedEventArgs e)
-        {
-            if (taskuri.SelectedItem is not TaskModel taskSelectat)
-            {
-                MessageBox.Show("Selecteaza un task pentru a-l sterge.");
-                return;
-            }
-
-            var rezultat = MessageBox.Show(
-                $"Sigur vrei sa stergi task-ul \"{taskSelectat.Titlu}\"?",
-                "Confirmare",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (rezultat == MessageBoxResult.Yes)
-            {
-                ((TaskViewModel)DataContext).StergeTask(taskSelectat.Id);
-            }
-        }
-    
-    
-  
 }

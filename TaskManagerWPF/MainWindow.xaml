@@ -60,7 +60,11 @@
             </Grid>
 
             <Grid Height="291" Width="105">
-                <Button Content="Sterge Task" Click="StergeTask_Click" Width="100" Height="30 " Margin="0, 90 ,0,30"/>
+                <Button Content="Sterge Task"
+                        Command="{Binding DeleteCommand}"
+                        Width="100"
+                        Height="30"
+                        Margin="0, 90 ,0,30"/>
                
             <Button Content="Salveaza" Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=Window}}" Width="100" Height="30" Margin="0,0,0,90"/> 
             </Grid> 
