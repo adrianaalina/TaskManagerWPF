@@ -61,77 +61,7 @@ public partial class MainWindow : Window
             }
         }
     
-
     
-    private void AdaugaTask_Click(object sender, RoutedEventArgs e)
-    {
-        if (string.IsNullOrWhiteSpace(txtTitlu.Text))
-        {
-            MessageBox.Show("Introduceti un titlu pentru task", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-        if (!int.TryParse(txtOra.Text, out int ora) || ora < 0 || ora > 23)
-        {
-            MessageBox.Show("Introduceți o oră validă (0-23).", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-        if (!int.TryParse(txtMinut.Text, out int minut) || minut < 0 || minut > 59)
-        {
-            MessageBox.Show("Introduceți minute valide (0-59).", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-        if (datePickerDeadline.SelectedDate == null)
-        {
-            MessageBox.Show("Selectați o dată pentru deadline.", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-        
-        DateTime deadline = datePickerDeadline.SelectedDate.Value.AddHours(ora).AddMinutes(minut);
-
-        if (categorieComboBox.SelectedItem is not CategoriiTask categorie)
-        {
-            string valoriAcceptate = string.Join(", ", Enum.GetNames(typeof(CategoriiTask)));
-            MessageBox.Show($"Status invalid. Folosește: {valoriAcceptate}.");
-            return;
-        }
-
-        string statusText = statusComboBox.Text;
-        if (!Enum.TryParse<StatusTask>(statusText, true, out StatusTask status))
-        {
-            string valoriAcceptate = string.Join(", ", Enum.GetNames(typeof(StatusTask)));
-            MessageBox.Show($"Status invalid. Folosește: {valoriAcceptate}.");
-            return;
-        }
-        string prioritateText = prioritateComboBox.Text;
-        if (!Enum.TryParse<PrioritateTask>(prioritateText, true, out PrioritateTask prioritate))
-        {
-            string valoriAcceptate = string.Join(", ", Enum.GetNames(typeof(PrioritateTask)));
-            MessageBox.Show($"Prioritate invalida. Folosește: {valoriAcceptate}.");
-            return;
-        }
-        var nouTask = new TaskModel
-        {
-            Titlu = txtTitlu.Text,
-            Descriere = txtDescriere.Text,
-            Deadline = deadline,
-            Categorie = categorie,
-            Status = status,
-            Prioritate = prioritate
-        }; 
-            _viewModel.AdaugaTask(nouTask);
-            
-           
-            
-        txtTitlu.Clear();
-        txtDescriere.Clear();
-        txtOra.Clear();
-        txtMinut.Clear();
-        /*categorieComboBox.Clear();
-        statusComboBox.Clear();*/
-        datePickerDeadline.SelectedDate = null;
-        _viewModel.IncarcaTaskuri();
-    }
-
     private void ActualizeazaTask_Click(object sender, RoutedEventArgs e)
     {
         try

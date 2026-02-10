@@ -5,7 +5,7 @@ using System.Data.Common;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Media;
+using System.Windows.Input;
 using TaskManagerWPF.Models;
 using TaskManagerWPF.Data;
 using TaskManagerWPF.ViewModels.Base;
@@ -14,7 +14,8 @@ namespace TaskManagerWPF.ViewModels;
 
 
 public class TaskViewModel:BaseViewModel
-{
+{ 
+    public ICommand AddCommand { get; }
     public Array Statusuri => Enum.GetValues(typeof(StatusTask));
     public Array Categorii => Enum.GetValues(typeof(CategoriiTask));
     public Array Prioritati => Enum.GetValues(typeof(PrioritateTask));
@@ -42,38 +43,44 @@ public class TaskViewModel:BaseViewModel
             OnPropertyChanged(nameof(DeadlineDate));
         }
     }
+    
+    //selectare deadline
     public int Ora
     {
-        get => SelectedTask?.Deadline.Hour ?? 0;
+        get => TaskNou?.Deadline.Hour ?? 0;
         set
         {
-            if (SelectedTask == null) return;
-            SelectedTask.Deadline = new DateTime(
-                SelectedTask.Deadline.Year,
-                SelectedTask.Deadline.Month,
-                SelectedTask.Deadline.Day,
+            if (TaskNou == null) return;
+
+            TaskNou.Deadline = new DateTime(
+                TaskNou.Deadline.Year,
+                TaskNou.Deadline.Month,
+                TaskNou.Deadline.Day,
                 value,
-                SelectedTask.Deadline.Minute,
+                TaskNou.Deadline.Minute,
                 0);
+
             OnPropertyChanged();
         }
     }
 
     public int Minut
     {
-        get => SelectedTask?.Deadline.Minute ?? 0;
+        get => TaskNou?.Deadline.Minute ?? 0;
         set
         {
-            if (SelectedTask == null) return;
-            SelectedTask.Deadline = new DateTime(
-                SelectedTask.Deadline.Year,
-                SelectedTask.Deadline.Month,
-                SelectedTask.Deadline.Day,
-                SelectedTask.Deadline.Hour,
+            if (TaskNou == null) return;
+
+            TaskNou.Deadline = new DateTime(
+                TaskNou.Deadline.Year,
+                TaskNou.Deadline.Month,
+                TaskNou.Deadline.Day,
+                TaskNou.Deadline.Hour,
                 value,
                 0);
+
             OnPropertyChanged();
-        }
+        } 
     }
     public DateTime? DeadlineDate
     {
@@ -95,12 +102,31 @@ public class TaskViewModel:BaseViewModel
         }
     }
 
+    //task in lucru
+    private TaskModel _taskNou = new TaskModel()
+    {
+        Deadline = DateTime.Now
+    };
 
+    public TaskModel TaskNou
+    {
+        get => _taskNou;
+        set
+        {
+            _taskNou = value;
+            OnPropertyChanged();
+        }
+    }
+
+    //constructor
     public TaskViewModel()
     {
-        IncarcaTaskuri(); 
+        IncarcaTaskuri();
+        AddCommand = new RelayCommand(_ => AdaugaTaskDinUI());
     }
     
+    
+    //Adaugare
     public void AdaugaTask(TaskModel task)
     {
         using var connection = DatabaseHelper.GetConnection(); 
@@ -119,8 +145,18 @@ public class TaskViewModel:BaseViewModel
         }
         Console.WriteLine("Task adăugat!");
     }
+    private void AdaugaTaskDinUI()
+    {
+      AdaugaTask(TaskNou);
+      IncarcaTaskuri();
+      TaskNou = new TaskModel()
+      {
+          Deadline = DateTime.Now
+      };
+    }
 
-
+    
+    //Obtinere Taskuri
     public List<TaskModel> ObtinereTaskuri()
     {
         List<TaskModel> taskuri = new List<TaskModel>();
@@ -172,6 +208,9 @@ public class TaskViewModel:BaseViewModel
         }
         return taskuri;
     }
+    
+    
+    //Sterge Task
     public void StergeTask(int id)
     {
         using var connection = DatabaseHelper.GetConnection();
@@ -194,6 +233,8 @@ public class TaskViewModel:BaseViewModel
             TaskuriC.Add(task); 
         }
     }
+    
+    //Actualizare Taskuri
     public void ActualizareTask(TaskModel task)
     {
         using var connection = DatabaseHelper.GetConnection();
