@@ -26,8 +26,8 @@ public enum PrioritateTask
 public class TaskModel : INotifyPropertyChanged
 {
     private int id;
-    private string titlu;
-    private string descriere;
+    private string? titlu;
+    private string? descriere;
     private DateTime deadline;
     private CategoriiTask categorie;
     private StatusTask status;

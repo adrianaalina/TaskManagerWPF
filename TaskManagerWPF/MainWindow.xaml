@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TaskManagerWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        Loaded="Window_Loaded">
+   
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,13 +16,13 @@
 
         <StackPanel Orientation="Horizontal" Margin="10">
             <Grid>
-                <TextBox x:Name="txtTitlu" Width="100" Margin="3" />
-                <TextBlock Text="Introduceți titlu" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{Binding Text, ElementName=txtTitlu, Converter={StaticResource EmptyStringToVisibilityConvert}}" />
+                <TextBox x:Name="txtTitlu" Width="80" Margin="3" />
+                <TextBlock Text="Scrie titlu" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{Binding Text, ElementName=txtTitlu, Converter={StaticResource EmptyStringToVisibilityConvert}}" />
             </Grid>
 
             <Grid>
-                <TextBox x:Name="txtDescriere" Width="122" Margin="3" />
-                <TextBlock Text="Introduceti descrierea" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{Binding Text, ElementName=txtDescriere, Converter={StaticResource EmptyStringToVisibilityConvert} }" />
+                <TextBox x:Name="txtDescriere" Width="80" Margin="3" />
+                <TextBlock Text="Scrie descriere" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{Binding Text, ElementName=txtDescriere, Converter={StaticResource EmptyStringToVisibilityConvert} }" />
             </Grid>
 
 
@@ -36,12 +38,16 @@
             </Grid>
 
             <Grid>
-                <TextBlock Text="Categorie:"  Width="100" Margin="3" />
+                <TextBlock Text="Categorie:"  Width="50" Margin="3" />
                 <ComboBox x:Name="categorieComboBox" Foreground="Gray"  Margin="10,5,0,0" />
             </Grid>
             <Grid>
-                <TextBlock Text="Status:" Width="74" Margin="3" />
+                <TextBlock Text="Status:" Width="45" Margin="3" />
                 <ComboBox x:Name="statusComboBox" Foreground="Gray" Margin="10,5,0,0"/>
+            </Grid>
+            <Grid>
+                <TextBlock Text="Prioritate:" Width="45" Margin="3" />
+                <ComboBox x:Name="prioritateComboBox" Foreground="Gray" Margin="10,5,0,0"/>
             </Grid>
 
             <Grid Height="291" Width="105">

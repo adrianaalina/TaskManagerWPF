@@ -31,12 +31,15 @@ public partial class MainWindow : Window
         InitializeComponent();
         statusComboBox.ItemsSource = Enum.GetValues(typeof(StatusTask));
         categorieComboBox.ItemsSource = Enum.GetValues(typeof(CategoriiTask));
-
-        DatabaseInitializer.InitializeDatabase();
+        prioritateComboBox.ItemsSource = Enum.GetValues(typeof(PrioritateTask));
+       
+    }
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
         _viewModel = new TaskViewModel();
         this.DataContext = _viewModel;
-        
     }
+
 
     private void StergeTask_Click(object sender, RoutedEventArgs e)
     {
@@ -51,7 +54,7 @@ public partial class MainWindow : Window
         var taskId = taskSelectat.Id;
         using (var connection = DatabaseHelper.GetConnection())
         {
-
+            connection.Open();
             var rezultat = MessageBox.Show($"Sigur vrei sa stergi task-ul \"{taskSelectat.Titlu}\"?", "Confirmare",
                 MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (rezultat == MessageBoxResult.Yes)
@@ -65,7 +68,8 @@ public partial class MainWindow : Window
                 }
                 if (taskSelectat != null)
                 {
-                    _viewModel.TaskuriC.Remove(taskSelectat);
+                    _viewModel.StergeTask(taskSelectat.Id);
+
                 }
 
                 Console.WriteLine($"Task cu ID-ul {taskId} a fost șters.");
@@ -97,17 +101,16 @@ public partial class MainWindow : Window
             MessageBox.Show("Selectați o dată pentru deadline.", "Eroare", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
-        DateTime deadline = datePickerDeadline.SelectedDate.Value.AddHours(ora).AddMinutes(minut);
         
-       
-        string categorietxt = categorieComboBox.Text;
-        if (!Enum.TryParse<CategoriiTask>(categorietxt, true, out CategoriiTask categorie))
+        DateTime deadline = datePickerDeadline.SelectedDate.Value.AddHours(ora).AddMinutes(minut);
+
+        if (categorieComboBox.SelectedItem is not CategoriiTask categorie)
         {
             string valoriAcceptate = string.Join(", ", Enum.GetNames(typeof(CategoriiTask)));
             MessageBox.Show($"Status invalid. Folosește: {valoriAcceptate}.");
             return;
         }
-        
+
         string statusText = statusComboBox.Text;
         if (!Enum.TryParse<StatusTask>(statusText, true, out StatusTask status))
         {
@@ -115,17 +118,26 @@ public partial class MainWindow : Window
             MessageBox.Show($"Status invalid. Folosește: {valoriAcceptate}.");
             return;
         }
-            var nouTask = new TaskModel(
-            
-                 txtTitlu.Text,
-                txtDescriere.Text,
-                 deadline,
-                 categorie,
-                 status
-            );
+        string prioritateText = prioritateComboBox.Text;
+        if (!Enum.TryParse<PrioritateTask>(prioritateText, true, out PrioritateTask prioritate))
+        {
+            string valoriAcceptate = string.Join(", ", Enum.GetNames(typeof(PrioritateTask)));
+            MessageBox.Show($"Prioritate invalida. Folosește: {valoriAcceptate}.");
+            return;
+        }
+        var nouTask = new TaskModel
+        {
+            Titlu = txtTitlu.Text,
+            Descriere = txtDescriere.Text,
+            Deadline = deadline,
+            Categorie = categorie,
+            Status = status,
+            Prioritate = prioritate
+        }; 
             _viewModel.AdaugaTask(nouTask);
-            _viewModel.TaskuriC.Add(nouTask);
-        
+            
+           
+            
         txtTitlu.Clear();
         txtDescriere.Clear();
         txtOra.Clear();
@@ -133,6 +145,7 @@ public partial class MainWindow : Window
         /*categorieComboBox.Clear();
         statusComboBox.Clear();*/
         datePickerDeadline.SelectedDate = null;
+        _viewModel.IncarcaTaskuri();
     }
 
     private void ActualizeazaTask_Click(object sender, RoutedEventArgs e)
@@ -156,8 +169,29 @@ public partial class MainWindow : Window
                 else
                     throw new Exception("Categoria selectată nu este validă.");
 
-                // De facut validarea orei + data +minut
-                DateTime deadline = datePickerDeadline.SelectedDate.Value.AddHours(txtOra).AddMinutes(txtMinut);
+                if (!int.TryParse(txtOra.Text, out int ora) || ora < 0 || ora > 23)
+                {
+                    MessageBox.Show("Introduceți o oră validă (0-23).");
+                    return;
+                }
+
+                if (!int.TryParse(txtMinut.Text, out int minut) || minut < 0 || minut > 59)
+                {
+                    MessageBox.Show("Introduceți minute valide (0-59).");
+                    return;
+                }
+
+                if (datePickerDeadline.SelectedDate == null)
+                {
+                    MessageBox.Show("Selectați o dată pentru deadline.");
+                    return;
+                }
+
+                DateTime deadline = datePickerDeadline.SelectedDate.Value
+                    .AddHours(ora)
+                    .AddMinutes(minut);
+
+                selectedTask.Deadline = deadline;
 
 
                _viewModel.ActualizareTask(selectedTask); // actualizare în SQLite
@@ -176,9 +210,5 @@ public partial class MainWindow : Window
             MessageBox.Show("Eroare la actualizare: " + ex.Message, "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
-   
-
-
-
 
 }

@@ -25,9 +25,9 @@ public class TaskViewModel:BaseViewModel
     
     public void AdaugaTask(TaskModel task)
     {
-        using var connection = DatabaseHelper.GetConnection(); // direct metoda care returnează SQLiteConnection valid
+        using var connection = DatabaseHelper.GetConnection(); 
         string insertQuery =
-            "INSERT INTO Taskuri (Titlu, Descriere, Deadline, Categorie, Status) VALUES (@titlu, @descriere, @deadline,@categorie ,@status)";
+            "INSERT INTO Taskuri (Titlu, Descriere, Deadline, Categorie, Status, Prioritate) VALUES (@titlu, @descriere, @deadline,@categorie ,@status, @prioritate)";
 
         using (var command = new SQLiteCommand(insertQuery, connection))
         {
@@ -36,6 +36,7 @@ public class TaskViewModel:BaseViewModel
             command.Parameters.AddWithValue("@deadline", task.Deadline.ToString("yyyy-MM-dd HH:mm:ss"));
             command.Parameters.AddWithValue("@categorie", task.Categorie.ToString());
             command.Parameters.AddWithValue("@status", task.Status.ToString());
+            command.Parameters.AddWithValue("@prioritate", task.Prioritate.ToString());
             command.ExecuteNonQuery();
         }
         Console.WriteLine("Task adăugat!");
@@ -59,21 +60,24 @@ public class TaskViewModel:BaseViewModel
                         {
                             Console.WriteLine($"Coloana {i}: {reader.GetName(i)}");
                         }
-                        string categorieText = reader.GetString(4);
-                        string statusText = reader.GetString(5);
+                        int id = reader.GetInt32(0);
+                        string titlu = reader.GetString(1);
+                        string descriere = reader.IsDBNull(2) ? "" : reader.GetString(2);
+                        DateTime deadline = DateTime.Parse(reader.GetString(3));
 
-                        CategoriiTask categorie = Enum.TryParse(categorieText, true, out CategoriiTask cat) ? cat : CategoriiTask.Nespecificat;
-                        StatusTask status = Enum.TryParse(statusText, true, out StatusTask st) ? st : StatusTask.Neinceput;
-                        DateTime data = DateTime.Parse(reader.GetString(3));
-                        
-                       var task = new TaskModel(
-                            reader.GetInt32(0),
-                            reader.GetString(1),
-                            reader.GetString(2),
-                            data,
-                            categorie,
-                            status
-                        );
+                        CategoriiTask categorie =Enum.Parse<CategoriiTask>(reader.GetString(4)) ;
+                        StatusTask status = Enum.Parse<StatusTask>(reader.GetString(5));
+                        PrioritateTask prioritate = Enum.Parse<PrioritateTask>(reader.GetString(6));
+
+                        TaskModel task = new TaskModel{
+                            Titlu = titlu,
+                            Descriere = descriere,
+                            Deadline = deadline,
+                            Categorie = categorie,
+                            Status = status,
+                            Prioritate = prioritate
+                            };
+                        task.Id = id;
                         taskuri.Add(task);
                     }
                     catch (Exception ex)
@@ -85,6 +89,18 @@ public class TaskViewModel:BaseViewModel
         }
         return taskuri;
     }
+    public void StergeTask(int id)
+    {
+        using var connection = DatabaseHelper.GetConnection();
+
+        string query = "DELETE FROM Taskuri WHERE Id=@id";
+        using var command = new SQLiteCommand(query, connection);
+        command.Parameters.AddWithValue("@id", id);
+        command.ExecuteNonQuery();
+
+        IncarcaTaskuri();
+    }
+
 
     public void IncarcaTaskuri()
     {
@@ -114,20 +130,23 @@ public class TaskViewModel:BaseViewModel
                                  Descriere = @Descriere, 
                                  Deadline = @Deadline, 
                                  Categorie= @Categorie,
-                                 Status = @Status
+                                 Status = @Status,
+                                 Prioritate = @Prioritate
                              WHERE Id = @Id";
 
 
                 using (var command = new SQLiteCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@Titlu", task.Titlu);
-                    command.Parameters.AddWithValue("@Descriere", task.Descriere);
-                    command.Parameters.AddWithValue("@Deadline", task.Deadline.ToString());
-                    command.Parameters.AddWithValue("@Categorie", task.Categorie.ToString());
-                    command.Parameters.AddWithValue("@Status", task.Status.ToString());
-                    command.Parameters.AddWithValue("@Id", task.Id);
+                    command.Parameters.AddWithValue("@titlu", task.Titlu);
+                    command.Parameters.AddWithValue("@descriere", task.Descriere);
+                    command.Parameters.AddWithValue("@deadline", task.Deadline.ToString());
+                    command.Parameters.AddWithValue("@categorie", (int)task.Categorie);
+                    command.Parameters.AddWithValue("@status", (int)task.Status);
+                    command.Parameters.AddWithValue("@prioritate", (int)task.Prioritate);
+                    command.Parameters.AddWithValue("@id", task.Id);
                     command.ExecuteNonQuery();
                 }
+                IncarcaTaskuri();
             }
         }
         

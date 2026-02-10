@@ -1,13 +1,23 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.Windows;
-
 using TaskManagerWPF;
 
-public partial class App : Application
+
+namespace TaskManagerWPF
 {
-    public App()
+    public partial class App : Application
     {
-        DatabaseInitializer.InitializeDatabase();
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+           
+            DatabaseInitializer.InitializeDatabase();
+
+          
+            MainWindow window = new MainWindow();
+            window.Show();
+        }
     }
 }

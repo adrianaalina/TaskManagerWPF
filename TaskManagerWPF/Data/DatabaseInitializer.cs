@@ -5,7 +5,7 @@ namespace TaskManagerWPF;
 
 public static class DatabaseInitializer
 {
-    private static readonly string folder = Path.Combine(Directory.GetCurrentDirectory(), "Data");
+    private static readonly string folder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
     private static readonly string dbPath = Path.Combine(folder, "taskmanager.db");
     private static readonly string connectionString = $"Data Source={dbPath};Version=3;";
 
@@ -27,8 +27,8 @@ public static class DatabaseInitializer
                     Titlu TEXT NOT NULL,
                     Descriere TEXT,
                     Deadline TEXT NOT NULL,
-                    Categorie TEXT,
-                    Status TEXT,
+                    Categorie INTEGER NOT NULL,
+                    Status INTEGER NOT NULL,
                     Prioritate INTEGER NOT NULL
                 );";
 
