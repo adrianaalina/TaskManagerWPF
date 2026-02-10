@@ -15,7 +15,7 @@
         <StackPanel Orientation="Horizontal" Margin="10">
             <Grid>
                 <TextBox x:Name="txtTitlu" Width="100" Margin="3" />
-                <TextBlock Text="Introduceți titlul" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{Binding Text, ElementName=txtTitlu, Converter={StaticResource EmptyStringToVisibilityConvert}}" />
+                <TextBlock Text="Introduceți titlu" Foreground="Gray" IsHitTestVisible="False" Margin="10,5,0,0" Visibility="{Binding Text, ElementName=txtTitlu, Converter={StaticResource EmptyStringToVisibilityConvert}}" />
             </Grid>
 
             <Grid>
@@ -56,7 +56,7 @@
                         <StackPanel>
                             <Border Background="{Binding BackgroundColor}" CornerRadius="6" Padding="4" Margin="2">
                                 <StackPanel>
-                                    <TextBlock Text="{Binding Titlul}" FontWeight="Bold" />
+                                    <TextBlock Text="{Binding Titlu}" FontWeight="Bold" />
                                     <TextBlock Text="{Binding Descriere}" FontStyle="Italic"/>
                                     <TextBlock Text="{Binding Deadline, StringFormat='Deadline:{0:dd/MM/yyyy HH:mm}'}"/>
                                     <TextBlock Text="{Binding Status}" FontStyle="Italic"/>

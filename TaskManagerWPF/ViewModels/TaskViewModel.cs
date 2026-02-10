@@ -25,13 +25,13 @@ public class TaskViewModel:BaseViewModel
     
     public void AdaugaTask(TaskModel task)
     {
-        using var connection = DataBaseHelper.ConnectToDatabase(); // direct metoda care returnează SQLiteConnection valid
+        using var connection = DatabaseHelper.GetConnection(); // direct metoda care returnează SQLiteConnection valid
         string insertQuery =
             "INSERT INTO Taskuri (Titlu, Descriere, Deadline, Categorie, Status) VALUES (@titlu, @descriere, @deadline,@categorie ,@status)";
 
         using (var command = new SQLiteCommand(insertQuery, connection))
         {
-            command.Parameters.AddWithValue("@titlu", task.Titlul);
+            command.Parameters.AddWithValue("@titlu", task.Titlu);
             command.Parameters.AddWithValue("@descriere", task.Descriere);
             command.Parameters.AddWithValue("@deadline", task.Deadline.ToString("yyyy-MM-dd HH:mm:ss"));
             command.Parameters.AddWithValue("@categorie", task.Categorie.ToString());
@@ -45,7 +45,7 @@ public class TaskViewModel:BaseViewModel
     public List<TaskModel> ObtinereTaskuri()
     {
         List<TaskModel> taskuri = new List<TaskModel>();
-        using (var connection = DataBaseHelper.ConnectToDatabase())
+        using (var connection = DatabaseHelper.GetConnection())
         {
             string selectQuery = "SELECT * FROM Taskuri";
             using (var command = new SQLiteCommand(selectQuery, connection))
@@ -66,7 +66,7 @@ public class TaskViewModel:BaseViewModel
                         StatusTask status = Enum.TryParse(statusText, true, out StatusTask st) ? st : StatusTask.Neinceput;
                         DateTime data = DateTime.Parse(reader.GetString(3));
                         
-                        TaskModel task = new TaskModel(
+                       var task = new TaskModel(
                             reader.GetInt32(0),
                             reader.GetString(1),
                             reader.GetString(2),
@@ -97,7 +97,7 @@ public class TaskViewModel:BaseViewModel
     }
     public void ActualizareTask(TaskModel task)
     {
-        using (var connection = DataBaseHelper.ConnectToDatabase())
+        using (var connection = DatabaseHelper.GetConnection())
         {
             if (task.Id <= 0)
             {
@@ -120,7 +120,7 @@ public class TaskViewModel:BaseViewModel
 
                 using (var command = new SQLiteCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@Titlu", task.Titlul);
+                    command.Parameters.AddWithValue("@Titlu", task.Titlu);
                     command.Parameters.AddWithValue("@Descriere", task.Descriere);
                     command.Parameters.AddWithValue("@Deadline", task.Deadline.ToString());
                     command.Parameters.AddWithValue("@Categorie", task.Categorie.ToString());

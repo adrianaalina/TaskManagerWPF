@@ -26,7 +26,7 @@ public enum PrioritateTask
 public class TaskModel : INotifyPropertyChanged
 {
     private int id;
-    private string titlul;
+    private string titlu;
     private string descriere;
     private DateTime deadline;
     private CategoriiTask categorie;
@@ -46,8 +46,8 @@ public class TaskModel : INotifyPropertyChanged
 
     public string Titlu
     {
-        get => titlul;
-        set { titlul = value;  OnPropertyChanged(nameof(Titlu)); } 
+        get => titlu;
+        set { titlu = value;  OnPropertyChanged(nameof(Titlu)); } 
     }
 
     public string Descriere

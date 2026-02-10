@@ -4,7 +4,7 @@ using System.Data.SQLite;
 
 namespace TaskManagerWPF.Data
 {
-    public static class DataBaseHelper
+    public static class DatabaseHelper
     {
         public static SQLiteConnection GetConnection()
       

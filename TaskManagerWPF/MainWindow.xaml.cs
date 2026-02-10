@@ -49,10 +49,10 @@ public partial class MainWindow : Window
 
         var taskSelectat = (TaskModel)taskuri.SelectedItem;
         var taskId = taskSelectat.Id;
-        using (var connection = DataBaseHelper.ConnectToDatabase())
+        using (var connection = DatabaseHelper.GetConnection())
         {
 
-            var rezultat = MessageBox.Show($"Sigur vrei sa stergi task-ul \"{taskSelectat.Titlul}\"?", "Confirmare",
+            var rezultat = MessageBox.Show($"Sigur vrei sa stergi task-ul \"{taskSelectat.Titlu}\"?", "Confirmare",
                 MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (rezultat == MessageBoxResult.Yes)
             {
@@ -141,7 +141,7 @@ public partial class MainWindow : Window
         {
             if (taskuri.SelectedItem is TaskModel selectedTask)
             {
-                selectedTask.Titlul = txtTitlu.Text;
+                selectedTask.Titlu = txtTitlu.Text;
                 selectedTask.Descriere = txtDescriere.Text;
 
                 
