@@ -112,9 +112,33 @@
                           DisplayMemberPath="Display"
                           Margin="5"
                           IsEditable="False"/>
-
+                
+                <TextBox Width="220"
+                         Margin="5"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         VerticalContentAlignment="Center"/>
             </StackPanel>
             <ListBox x:Name="taskuri" SelectedItem="{Binding SelectedTask, Mode=TwoWay}" ItemsSource="{Binding TaskuriView}" Width="200" Height="300" Margin="5">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Style.Triggers>
+
+                            <!-- Task intarziat -->
+                            <DataTrigger Binding="{Binding EsteIntarziat}" Value="True">
+                                <Setter Property="Background" Value="#a61f1b"/>
+                                <Setter Property="Foreground" Value=" Black"/>
+                            </DataTrigger>
+
+                            <!-- Deadline azi -->
+                            <DataTrigger Binding="{Binding EsteAzi}" Value="True">
+                                <Setter Property="Background" Value="#bf8250"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                            </DataTrigger>
+
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>

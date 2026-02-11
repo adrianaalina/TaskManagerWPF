@@ -19,7 +19,6 @@ public class TaskViewModel : BaseViewModel
 {
     public ICommand AddCommand { get; private set; }
     public ICommand DeleteCommand { get; private set; }
-
     public Array Statusuri => Enum.GetValues(typeof(StatusTask));
     public Array Categorii => Enum.GetValues(typeof(CategoriiTask));
     public Array Prioritati => Enum.GetValues(typeof(PrioritateTask));
@@ -32,7 +31,18 @@ public class TaskViewModel : BaseViewModel
     public ICollectionView TaskuriView {get; private set; }
 
     private readonly IDialogService _dialogService;
-    
+    private string? _searchText;
+
+    public string? SearchText
+    {
+        get => _searchText;
+        set
+        {
+            _searchText = value;
+            OnPropertyChanged();
+            TaskuriView?.Refresh();
+        }
+    }
     
     private FilterOption<StatusTask>? _selectedStatus;
     public FilterOption<StatusTask>? SelectedStatus
@@ -441,24 +451,31 @@ public class TaskViewModel : BaseViewModel
     {
         if (obj is not TaskModel task)
             return false;
-
+        if (!string.IsNullOrWhiteSpace(SearchText))
+        {
+            if (task.Titlu == null ||
+                !task.Titlu.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+                return false;
+        }
         bool noStatus = SelectedStatus?.Value == null;
         bool noCat = SelectedCategorie?.Value == null;
         bool noPrio = SelectedPrioritate?.Value == null;
 
         if (noStatus && noCat && noPrio)
             return true;
+
         if (SelectedStatus?.Value != null && task.Status != SelectedStatus.Value)
             return false;
-
+        
         if (SelectedCategorie?.Value != null && task.Categorie != SelectedCategorie.Value)
             return false;
-
+        
         if (SelectedPrioritate?.Value != null && task.Prioritate != SelectedPrioritate.Value)
             return false;
 
         return true;
     }
+
 
     
 }

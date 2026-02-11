@@ -87,6 +87,11 @@ public class TaskModel : INotifyPropertyChanged, IDataErrorInfo
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(numeProprietate));
     }
 
+    public bool EsteIntarziat => Deadline.HasValue && Deadline.Value < DateTime.Now;
+    public bool EsteAzi =>
+        Deadline.HasValue &&
+        Deadline.Value.Date == DateTime.Now.Date &&
+        Deadline.Value > DateTime.Now;
     public string Error => null;
 
     public string this[string columnName]
