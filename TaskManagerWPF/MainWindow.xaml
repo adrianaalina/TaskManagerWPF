@@ -27,7 +27,7 @@
             </Grid>
 
 
-            <DatePicker Name="datePickerDeadline"  Width="100" Margin="3"  SelectedDate="{Binding CurrentTask.Deadline, Mode=TwoWay}" />
+            <DatePicker Name="datePickerDeadline"  Width="100" Margin="3"  SelectedDate="{Binding CurrentTask.Deadline,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Grid>
                 <TextBox Name="txtOra"  Text="{Binding Ora, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50" Margin="3"/>

@@ -80,17 +80,19 @@ public class TaskViewModel : BaseViewModel
     //selectare deadline
     public int Ora
     {
-        get => CurrentTask?.Deadline.Hour ?? 0;
+        get => CurrentTask?.Deadline?.Hour ?? 0;
         set
         {
-            if (CurrentTask == null) return;
+            if (CurrentTask?.Deadline == null) return;
+
+            var d = CurrentTask.Deadline.Value;
 
             CurrentTask.Deadline = new DateTime(
-                CurrentTask.Deadline.Year,
-                CurrentTask.Deadline.Month,
-                CurrentTask.Deadline.Day,
+                d.Year,
+                d.Month,
+                d.Day,
                 value,
-                CurrentTask.Deadline.Minute,
+                d.Minute,
                 0);
 
             OnPropertyChanged(nameof(Ora));
@@ -99,16 +101,18 @@ public class TaskViewModel : BaseViewModel
 
     public int Minut
     {
-        get => CurrentTask?.Deadline.Minute ?? 0;
+        get => CurrentTask?.Deadline?.Minute ?? 0;
         set
         {
-            if (CurrentTask == null) return;
+            if (CurrentTask?.Deadline == null) return;
+
+            var d = CurrentTask.Deadline.Value;
 
             CurrentTask.Deadline = new DateTime(
-                CurrentTask.Deadline.Year,
-                CurrentTask.Deadline.Month,
-                CurrentTask.Deadline.Day,
-                CurrentTask.Deadline.Hour,
+                d.Year,
+                d.Month,
+                d.Day,
+                d.Hour,
                 value,
                 0);
 
@@ -156,7 +160,11 @@ public class TaskViewModel : BaseViewModel
     public void SaveTask()
     {
         using var connection = DatabaseHelper.GetConnection();
-
+        if (CurrentTask.Deadline == null)
+        {
+            MessageBox.Show("Te rog selectează un deadline pentru task.");
+            return;
+        }
         if (CurrentTask.Id == 0)
         {
             // INSERT
@@ -168,10 +176,10 @@ public class TaskViewModel : BaseViewModel
 
             cmd.Parameters.AddWithValue("@Titlu", CurrentTask.Titlu);
             cmd.Parameters.AddWithValue("@Descriere", CurrentTask.Descriere);
-            cmd.Parameters.AddWithValue("@Deadline", CurrentTask.Deadline.ToString("yyyy-MM-dd HH:mm:ss"));
-            cmd.Parameters.AddWithValue("@Categorie", CurrentTask.Categorie.ToString());
-            cmd.Parameters.AddWithValue("@Status", CurrentTask.Status.ToString());
-            cmd.Parameters.AddWithValue("@Prioritate", CurrentTask.Prioritate.ToString());
+            cmd.Parameters.AddWithValue("@Deadline", CurrentTask.Deadline.Value.ToString("yyyy-MM-dd HH:mm:ss"));
+            cmd.Parameters.AddWithValue("@Categorie", (int)CurrentTask.Categorie);
+            cmd.Parameters.AddWithValue("@Status",  (int)CurrentTask.Status);
+            cmd.Parameters.AddWithValue("@Prioritate", (int)CurrentTask.Prioritate);
 
             cmd.ExecuteNonQuery();
         }
@@ -191,10 +199,10 @@ public class TaskViewModel : BaseViewModel
 
             cmd.Parameters.AddWithValue("@Titlu", CurrentTask.Titlu);
             cmd.Parameters.AddWithValue("@Descriere", CurrentTask.Descriere);
-            cmd.Parameters.AddWithValue("@Deadline", CurrentTask.Deadline.ToString("yyyy-MM-dd HH:mm:ss"));
-            cmd.Parameters.AddWithValue("@Categorie", CurrentTask.Categorie.ToString());
-            cmd.Parameters.AddWithValue("@Status", CurrentTask.Status.ToString());
-            cmd.Parameters.AddWithValue("@Prioritate", CurrentTask.Prioritate.ToString());
+            cmd.Parameters.AddWithValue("@Deadline", CurrentTask.Deadline.Value.ToString("yyyy-MM-dd HH:mm:ss"));
+            cmd.Parameters.AddWithValue("@Categorie",(int)CurrentTask.Categorie);
+            cmd.Parameters.AddWithValue("@Status", (int)CurrentTask.Status);
+            cmd.Parameters.AddWithValue("@Prioritate", (int)CurrentTask.Prioritate);
             cmd.Parameters.AddWithValue("@Id", CurrentTask.Id);
 
             cmd.ExecuteNonQuery();
@@ -204,6 +212,7 @@ public class TaskViewModel : BaseViewModel
 
         // RESET FORMULAR
         CurrentTask = new TaskModel { Deadline = DateTime.Now };
+        OnPropertyChanged(nameof(CurrentTask));
         OnPropertyChanged(nameof(Ora));
         OnPropertyChanged(nameof(Minut));
 
@@ -232,17 +241,10 @@ public class TaskViewModel : BaseViewModel
                         int id = reader.GetInt32(0);
                         string titlu = reader.GetString(1);
                         string descriere = reader.IsDBNull(2) ? "" : reader.GetString(2);
-                        DateTime deadline = DateTime.Parse(reader.GetString(3));
-
-                        CategoriiTask categorie;
-                        if (!Enum.TryParse(reader.GetString(4), out categorie))
-                            categorie = CategoriiTask.Nespecificat;
-                        StatusTask status;
-                        if (!Enum.TryParse(reader.GetString(5), out status))
-                            status = StatusTask.Neinceput;
-                        PrioritateTask prioritate;
-                        if (!Enum.TryParse(reader.GetString(6), out prioritate))
-                            prioritate = PrioritateTask.Normal;
+                        DateTime? deadline = reader.IsDBNull(3) ? null : DateTime.Parse(reader.GetString(3));
+                        CategoriiTask categorie = (CategoriiTask)reader.GetInt32(4);
+                        StatusTask status = (StatusTask)reader.GetInt32(5);
+                        PrioritateTask prioritate = (PrioritateTask)reader.GetInt32(6);
                         TaskModel task = new TaskModel
                         {
                             Titlu = titlu,

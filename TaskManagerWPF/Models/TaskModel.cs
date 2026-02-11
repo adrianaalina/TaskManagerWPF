@@ -28,7 +28,7 @@ public class TaskModel : INotifyPropertyChanged
     private int id;
     private string? titlu;
     private string? descriere;
-    private DateTime deadline;
+    private DateTime? deadline;
     private CategoriiTask categorie;
     private StatusTask status;
     private PrioritateTask prioritate;
@@ -56,7 +56,7 @@ public class TaskModel : INotifyPropertyChanged
         set{descriere=value; OnPropertyChanged(nameof(Descriere)); }
     }
     
-    public DateTime Deadline
+    public DateTime? Deadline
     {
         get => deadline;
         set { deadline = value; OnPropertyChanged(nameof(Deadline)); }
