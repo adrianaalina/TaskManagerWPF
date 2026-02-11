@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Media;
 namespace TaskManagerWPF.Models;
+using System.ComponentModel;
 
 public enum StatusTask
 {
@@ -23,7 +24,7 @@ public enum PrioritateTask
     Normal,
     Optional
 }
-public class TaskModel : INotifyPropertyChanged
+public class TaskModel : INotifyPropertyChanged, IDataErrorInfo
 {
     private int id;
     private string? titlu;
@@ -85,6 +86,39 @@ public class TaskModel : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(numeProprietate));
     }
-   
+
+    public string Error => null;
+
+    public string this[string columnName]
+    {
+        get
+        {
+            switch (columnName)
+            {
+                case nameof(Titlu):
+                    if (string.IsNullOrWhiteSpace(Titlu))
+                        return "Titlul este obligatoriu.";
+                    if (Titlu.Length < 3)
+                        return "Titlul trebuie sa aiba minim 3 caractere.";
+                    break;
+
+                case nameof(Deadline):
+                    if (Deadline == null)
+                        return "Selecteaza un deadline.";
+                    if (Deadline < DateTime.Now.Date)
+                        return "Nu poti seta un deadline in trecut.";
+                    break;
+
+                case nameof(Descriere):
+                    if (string.IsNullOrWhiteSpace(Descriere))
+                        return "Descrierea este obligatorie.";
+                    if (Descriere.Length < 5)
+                        return "Descrierea trebuie sa aiba minim 5 caractere.";
+                    break;
+            }
+
+            return null;
+        }
+    }
 
 }

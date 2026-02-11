@@ -7,9 +7,10 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using TaskManagerWPF.Models;
+using TaskManagerWPF.Services;
 using TaskManagerWPF.Data;
 using TaskManagerWPF.ViewModels.Base;
-
+using System.ComponentModel;
 namespace TaskManagerWPF.ViewModels;
 
 
@@ -23,6 +24,9 @@ public class TaskViewModel : BaseViewModel
     public Array Prioritati => Enum.GetValues(typeof(PrioritateTask));
 
     private ObservableCollection<TaskModel> _taskuriC = new();
+
+    private readonly IDialogService _dialogService;
+
 
     public ObservableCollection<TaskModel> TaskuriC
     {
@@ -61,6 +65,7 @@ public class TaskViewModel : BaseViewModel
             } 
             OnPropertyChanged(nameof(Ora));
             OnPropertyChanged(nameof(Minut));
+            CommandManager.InvalidateRequerySuggested();
         }
     }
 
@@ -71,10 +76,23 @@ public class TaskViewModel : BaseViewModel
         get => _currentTask;
         set
         {
+            if (_currentTask != null)
+                _currentTask.PropertyChanged -= CurrentTask_PropertyChanged;
+
             _currentTask = value;
+
+            if (_currentTask != null)
+                _currentTask.PropertyChanged += CurrentTask_PropertyChanged;
+
             OnPropertyChanged();
+            CommandManager.InvalidateRequerySuggested();
         }
     }
+    private void CurrentTask_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        CommandManager.InvalidateRequerySuggested();
+    }
+
 
 
     //selectare deadline
@@ -124,9 +142,15 @@ public class TaskViewModel : BaseViewModel
     //constructor
     public TaskViewModel()
     {
+        _dialogService = new DialogService();
+        
+        CurrentTask = new TaskModel(); 
         IncarcaTaskuri();
-        AddCommand = new RelayCommand(_ => SaveTask());
-        DeleteCommand= new RelayCommand (_=>DeleteSelected(),_=>SelectedTask != null);
+
+        AddCommand = new RelayCommand(_ => SaveTask(), _ => IsTaskValid());
+        DeleteCommand = new RelayCommand(_ => DeleteSelected(), _ => SelectedTask != null);
+
+        CommandManager.InvalidateRequerySuggested(); 
     }
 
     //Stergere
@@ -134,13 +158,11 @@ public class TaskViewModel : BaseViewModel
     {
         if(SelectedTask==null) return;
         
-        var rezultat=MessageBox.Show( 
+        bool rezultat = _dialogService.ShowConfirmation(
             $"Sigur vrei sa stergi task-ul \"{SelectedTask.Titlu}\"?",
-        "Confirmare",
-        MessageBoxButton.YesNo,
-        MessageBoxImage.Question);
+            "Confirmare");
 
-        if(rezultat !=MessageBoxResult.Yes) return;
+        if (!rezultat) return;
         using var connection=DatabaseHelper.GetConnection();
         string query = "DELETE FROM Taskuri WHERE Id=@id";
         using var command = new SQLiteCommand(query, connection);
@@ -160,11 +182,7 @@ public class TaskViewModel : BaseViewModel
     public void SaveTask()
     {
         using var connection = DatabaseHelper.GetConnection();
-        if (CurrentTask.Deadline == null)
-        {
-            MessageBox.Show("Te rog selectează un deadline pentru task.");
-            return;
-        }
+        
         if (CurrentTask.Id == 0)
         {
             // INSERT
@@ -241,7 +259,17 @@ public class TaskViewModel : BaseViewModel
                         int id = reader.GetInt32(0);
                         string titlu = reader.GetString(1);
                         string descriere = reader.IsDBNull(2) ? "" : reader.GetString(2);
-                        DateTime? deadline = reader.IsDBNull(3) ? null : DateTime.Parse(reader.GetString(3));
+                        DateTime? deadline = null;
+
+                        var rawDeadline = reader.GetValue(3);
+
+                        if (rawDeadline != DBNull.Value)
+                        {
+                            if (rawDeadline is string s)
+                                deadline = DateTime.Parse(s);
+                            else
+                                deadline = Convert.ToDateTime(rawDeadline);
+                        }
                         CategoriiTask categorie = (CategoriiTask)reader.GetInt32(4);
                         StatusTask status = (StatusTask)reader.GetInt32(5);
                         PrioritateTask prioritate = (PrioritateTask)reader.GetInt32(6);
@@ -283,6 +311,24 @@ public class TaskViewModel : BaseViewModel
     }
 
 
+    //Validare
+    private bool IsTaskValid()
+    {
+        if (CurrentTask == null)
+            return false;
+
+        if (!string.IsNullOrEmpty(CurrentTask[nameof(CurrentTask.Titlu)]))
+            return false;
+
+        if (!string.IsNullOrEmpty(CurrentTask[nameof(CurrentTask.Deadline)]))
+            return false;
+
+        if (!string.IsNullOrEmpty(CurrentTask[nameof(CurrentTask.Descriere)]))
+            return false;
+
+        return true;
+    }
+    
     public void IncarcaTaskuri()
     {
         TaskuriC.Clear();
