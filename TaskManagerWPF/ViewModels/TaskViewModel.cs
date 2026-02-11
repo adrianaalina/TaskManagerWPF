@@ -11,6 +11,7 @@ using TaskManagerWPF.Services;
 using TaskManagerWPF.Data;
 using TaskManagerWPF.ViewModels.Base;
 using System.ComponentModel;
+using System.Windows.Data;
 namespace TaskManagerWPF.ViewModels;
 
 
@@ -22,12 +23,50 @@ public class TaskViewModel : BaseViewModel
     public Array Statusuri => Enum.GetValues(typeof(StatusTask));
     public Array Categorii => Enum.GetValues(typeof(CategoriiTask));
     public Array Prioritati => Enum.GetValues(typeof(PrioritateTask));
+    public List<FilterOption<StatusTask>> StatusuriFiltru { get; }
+    public List<FilterOption<CategoriiTask>> CategoriiFiltru { get; }
+    public List<FilterOption<PrioritateTask>> PrioritatiFiltru { get; }
 
     private ObservableCollection<TaskModel> _taskuriC = new();
 
+    public ICollectionView TaskuriView {get; private set; }
+
     private readonly IDialogService _dialogService;
-
-
+    
+    
+    private FilterOption<StatusTask>? _selectedStatus;
+    public FilterOption<StatusTask>? SelectedStatus
+    {
+        get => _selectedStatus;
+        set
+        {
+            _selectedStatus = value;
+            OnPropertyChanged();
+            TaskuriView.Refresh();
+        }
+    }
+    private FilterOption<CategoriiTask>? _selectedCategorie;
+    public FilterOption<CategoriiTask>? SelectedCategorie
+    {
+        get => _selectedCategorie;
+        set
+        {
+            _selectedCategorie = value;
+            OnPropertyChanged();
+            TaskuriView.Refresh();
+        }
+    }
+    private FilterOption<PrioritateTask>? _selectedPrioritate;
+    public FilterOption<PrioritateTask>? SelectedPrioritate
+    {
+        get => _selectedPrioritate;
+        set
+        {
+            _selectedPrioritate = value;
+            OnPropertyChanged();
+            TaskuriView.Refresh();
+        }
+    }
     public ObservableCollection<TaskModel> TaskuriC
     {
         get => _taskuriC;
@@ -37,6 +76,8 @@ public class TaskViewModel : BaseViewModel
             OnPropertyChanged();
         }
     }
+    
+    
 
     //task curent pentru editare sau adaugare
     private TaskModel _selectedTask;
@@ -91,6 +132,11 @@ public class TaskViewModel : BaseViewModel
     private void CurrentTask_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         CommandManager.InvalidateRequerySuggested();
+        if (e.PropertyName == nameof(TaskModel.Deadline))
+        {
+            OnPropertyChanged(nameof(Ora));
+            OnPropertyChanged(nameof(Minut));
+        }
     }
 
 
@@ -145,8 +191,54 @@ public class TaskViewModel : BaseViewModel
         _dialogService = new DialogService();
         
         CurrentTask = new TaskModel(); 
+        
+        TaskuriView=CollectionViewSource.GetDefaultView(TaskuriC);
+        TaskuriView.Filter = FiltruTaskuri;
         IncarcaTaskuri();
+        
+        StatusuriFiltru = new List<FilterOption<StatusTask>>
+        {
+            new FilterOption<StatusTask>{ Display="Toate", Value= null }
+        };
 
+        StatusuriFiltru.AddRange(
+            Enum.GetValues(typeof(StatusTask))
+                .Cast<StatusTask>()
+                .Select(s => new FilterOption<StatusTask>
+                {
+                    Display = s.ToString(),
+                    Value = s
+                }));
+
+        CategoriiFiltru = new List<FilterOption<CategoriiTask>>
+        {
+            new FilterOption<CategoriiTask>{ Display="Toate", Value=null }
+        };
+        
+        CategoriiFiltru.AddRange(
+            Enum.GetValues(typeof(CategoriiTask))
+                .Cast<CategoriiTask>()
+                .Select(c => new FilterOption<CategoriiTask>
+                {
+                    Display = c.ToString(),
+                    Value = c
+                }));
+
+
+        PrioritatiFiltru = new List<FilterOption<PrioritateTask>>
+        {
+            new FilterOption<PrioritateTask>{ Display="Toate", Value=null }
+        };
+
+        PrioritatiFiltru.AddRange(
+            Enum.GetValues(typeof(PrioritateTask))
+                .Cast<PrioritateTask>()
+                .Select(p => new FilterOption<PrioritateTask>
+                {
+                    Display = p.ToString(),
+                    Value = p
+                }));
+        
         AddCommand = new RelayCommand(_ => SaveTask(), _ => IsTaskValid());
         DeleteCommand = new RelayCommand(_ => DeleteSelected(), _ => SelectedTask != null);
 
@@ -170,10 +262,14 @@ public class TaskViewModel : BaseViewModel
         command.ExecuteNonQuery();
 
         IncarcaTaskuri();
+        TaskuriView.Refresh();
+
         CurrentTask = new TaskModel { Deadline = DateTime.Now };
 
         OnPropertyChanged(nameof(Ora));
         OnPropertyChanged(nameof(Minut));
+        
+
     }
     
 
@@ -227,6 +323,8 @@ public class TaskViewModel : BaseViewModel
         }
 
         IncarcaTaskuri();
+        TaskuriView.Refresh();
+
 
         // RESET FORMULAR
         CurrentTask = new TaskModel { Deadline = DateTime.Now };
@@ -339,6 +437,30 @@ public class TaskViewModel : BaseViewModel
         }
     }
 
+    private bool FiltruTaskuri(object obj)
+    {
+        if (obj is not TaskModel task)
+            return false;
+
+        bool noStatus = SelectedStatus?.Value == null;
+        bool noCat = SelectedCategorie?.Value == null;
+        bool noPrio = SelectedPrioritate?.Value == null;
+
+        if (noStatus && noCat && noPrio)
+            return true;
+        if (SelectedStatus?.Value != null && task.Status != SelectedStatus.Value)
+            return false;
+
+        if (SelectedCategorie?.Value != null && task.Categorie != SelectedCategorie.Value)
+            return false;
+
+        if (SelectedPrioritate?.Value != null && task.Prioritate != SelectedPrioritate.Value)
+            return false;
+
+        return true;
+    }
+
+    
 }
    
 

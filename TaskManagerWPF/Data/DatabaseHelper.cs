@@ -16,6 +16,12 @@ public static class DatabaseHelper
 
     public static SQLiteConnection GetConnection()
     {
+        if (!Directory.Exists(folder))
+            Directory.CreateDirectory(folder);
+        if (!File.Exists(dbPath))
+        {
+            SQLiteConnection.CreateFile(dbPath);
+        }
         var connection = new SQLiteConnection(connectionString);
         connection.Open();
         return connection;

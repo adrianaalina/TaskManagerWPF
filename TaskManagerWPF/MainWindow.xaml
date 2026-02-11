@@ -9,6 +9,14 @@
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
         <ResourceDictionary>
+            <DataTemplate x:Key="NullEnumTemplate">
+                <TextBlock Text="{Binding}" />
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                        <Setter Property="TextBlock.Text" Value="Toate"/>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
             <Style TargetType="{x:Type TextBox}">
                 <Style.Triggers>
                     <Trigger Property="Validation.HasError" Value="True">
@@ -82,7 +90,31 @@
             <Button Content="Salveaza" Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=Window}}" Width="100" Height="30" Margin="0,0,0,90"/> 
             </Grid> 
 
-            <ListBox x:Name="taskuri" SelectedItem="{Binding SelectedTask, Mode=TwoWay}" ItemsSource="{Binding TaskuriC }" Width="200" Height="300" Margin="5">
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+
+                <ComboBox Width="70"
+                          ItemsSource="{Binding StatusuriFiltru}"
+                          SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
+                          DisplayMemberPath="Display"
+                          Margin="5"
+                          IsEditable="False"/>
+
+                <ComboBox Width="70"
+                          ItemsSource="{Binding CategoriiFiltru}"
+                          SelectedItem="{Binding SelectedCategorie,Mode=TwoWay}"
+                          DisplayMemberPath="Display"
+                          Margin="5"
+                          IsEditable="False"/>
+
+                <ComboBox Width="70"
+                          ItemsSource="{Binding PrioritatiFiltru}"
+                          SelectedItem="{Binding SelectedPrioritate,Mode=TwoWay}"
+                          DisplayMemberPath="Display"
+                          Margin="5"
+                          IsEditable="False"/>
+
+            </StackPanel>
+            <ListBox x:Name="taskuri" SelectedItem="{Binding SelectedTask, Mode=TwoWay}" ItemsSource="{Binding TaskuriView}" Width="200" Height="300" Margin="5">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
