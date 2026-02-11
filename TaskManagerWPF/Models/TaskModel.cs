@@ -136,8 +136,8 @@ public class TaskModel : INotifyPropertyChanged, IDataErrorInfo
                 case nameof(Deadline):
                     if (Deadline == null)
                         return "Selecteaza un deadline.";
-                    if (Deadline < DateTime.Now.Date)
-                        return "Nu poti seta un deadline in trecut.";
+                    if (Id == 0 && Deadline.Value < DateTime.Now)
+                        return "Nu poti crea un task in trecut.";
                     break;
 
                 case nameof(Descriere):

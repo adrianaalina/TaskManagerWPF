@@ -170,6 +170,8 @@ public class TaskViewModel : BaseViewModel
                 0);
 
             OnPropertyChanged(nameof(Ora));
+            OnPropertyChanged(nameof(CurrentTask));
+            CommandManager.InvalidateRequerySuggested();
         }
     }
 
@@ -191,6 +193,8 @@ public class TaskViewModel : BaseViewModel
                 0);
 
             OnPropertyChanged(nameof(Minut));
+            OnPropertyChanged(nameof(CurrentTask));
+            CommandManager.InvalidateRequerySuggested();
         }
     }
     
