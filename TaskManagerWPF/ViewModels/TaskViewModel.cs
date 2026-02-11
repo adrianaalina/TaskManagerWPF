@@ -204,6 +204,15 @@ public class TaskViewModel : BaseViewModel
         
         TaskuriView=CollectionViewSource.GetDefaultView(TaskuriC);
         TaskuriView.Filter = FiltruTaskuri;
+        TaskuriView.SortDescriptions.Add(
+            new SortDescription(nameof(TaskModel.UrgentaSortare), ListSortDirection.Ascending));
+
+        TaskuriView.SortDescriptions.Add(
+            new SortDescription(nameof(TaskModel.PrioritateSortare), ListSortDirection.Ascending));
+
+        TaskuriView.SortDescriptions.Add(
+            new SortDescription(nameof(TaskModel.Deadline), ListSortDirection.Ascending));
+        
         IncarcaTaskuri();
         
         StatusuriFiltru = new List<FilterOption<StatusTask>>

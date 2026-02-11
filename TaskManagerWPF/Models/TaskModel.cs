@@ -82,6 +82,32 @@ public class TaskModel : INotifyPropertyChanged, IDataErrorInfo
 
     public event PropertyChangedEventHandler? PropertyChanged;
     
+    public int PrioritateSortare =>
+        Prioritate switch
+        {
+            PrioritateTask.Urgent => 0,
+            PrioritateTask.Normal => 1,
+            PrioritateTask.Optional => 2,
+            _ => 3
+        };
+    public int UrgentaSortare
+    {
+        get
+        {
+            if (!Deadline.HasValue)
+                return 3;
+
+            if (Deadline.Value < DateTime.Now)
+                return 0; // intarziat
+
+            if (Deadline.Value.Date == DateTime.Now.Date)
+                return 1; // azi
+
+            return 2; // pentru viitor
+        }
+    }
+
+    
     protected void OnPropertyChanged(string numeProprietate)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(numeProprietate));
@@ -125,5 +151,5 @@ public class TaskModel : INotifyPropertyChanged, IDataErrorInfo
             return null;
         }
     }
-
+    
 }
